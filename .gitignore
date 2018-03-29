@@ -1,0 +1,12 @@
+obj
+bin
+*.out
+*.layout
+*.depend
+*.dir
+.vs
+*.VC.*
+*.filter
+*.user
+*.cmd
+Debug

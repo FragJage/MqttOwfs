@@ -1,0 +1,34 @@
+language: cpp
+
+compiler: gcc
+env:
+  global:
+    - COMPILER=g++-4.9
+
+sudo: required
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.9
+      - valgrind
+      - owfs
+    
+install:
+  - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
+  - sudo /etc/init.d/owhttpd stop
+  - sudo /etc/init.d/owftpd stop
+  - sudo /etc/init.d/owserver stop
+  - sudo cp /home/travis/build/FragJage/xPLOwfs/owfs.conf /etc/owfs.conf
+  - sudo /etc/init.d/owserver start
+
+script:
+  cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER);
+  make;
+  ./test/bin/unittest;
+  valgrind --error-exitcode=1 --leak-check=full ./test/bin/unittest;
+
+after_success:
+  coveralls --include src --gcov-options '\-lp' --gcov 'gcov-4.9';

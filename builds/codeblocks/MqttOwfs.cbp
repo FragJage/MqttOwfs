@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="MqttOwfs" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release">
+				<Option output="bin/MqttOwfs" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="/Debug" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add option="-DWIN32" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Debug">
+				<Option output="bin/MqttOwfs-Debug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="/Console" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add option="-DWIN32" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add option="-m32" />
+			<Add option="-fexceptions" />
+			<Add directory="C:/Program Files (x86)/mosquitto/devel" />
+			<Add directory="../../dependency" />
+			<Add directory="../../src" />
+		</Compiler>
+		<Linker>
+			<Add option="-m32" />
+			<Add library="ws2_32" />
+			<Add library="mosquittopp" />
+			<Add directory="C:/Program Files (x86)/mosquitto/devel" />
+		</Linker>
+		<Unit filename="../../dependency/Plateforms/Plateforms.cpp" />
+		<Unit filename="../../dependency/Plateforms/Plateforms.h" />
+		<Unit filename="../../dependency/SafeFunctions/SafeFunctions.cpp" />
+		<Unit filename="../../dependency/SafeFunctions/SafeFunctions.h" />
+		<Unit filename="../../dependency/Service/Service.cpp" />
+		<Unit filename="../../dependency/Service/Service.h" />
+		<Unit filename="../../dependency/SimpleFolders/SimpleFolders.cpp" />
+		<Unit filename="../../dependency/SimpleFolders/SimpleFolders.h" />
+		<Unit filename="../../dependency/SimpleIni/SimpleIni.cpp" />
+		<Unit filename="../../dependency/SimpleIni/SimpleIni.h" />
+		<Unit filename="../../dependency/SimpleLog/SimpleLog.cpp" />
+		<Unit filename="../../dependency/SimpleLog/SimpleLog.h" />
+		<Unit filename="../../dependency/SimpleLog/SimpleLog.inl" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSock.cpp" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSock.h" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSockTCP.cpp" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSockTCP.h" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSockUDP.cpp" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSockUDP.h" />
+		<Unit filename="../../dependency/StringTools/StringTools.cpp" />
+		<Unit filename="../../dependency/StringTools/StringTools.h" />
+		<Unit filename="../../dependency/owfscpp/owfscpp.cpp" />
+		<Unit filename="../../dependency/owfscpp/owfscpp.h" />
+		<Unit filename="../../src/MqttClient.cpp" />
+		<Unit filename="../../src/MqttClient.h" />
+		<Unit filename="../../src/MqttOwfs.cpp" />
+		<Unit filename="../../src/MqttOwfs.h" />
+		<Unit filename="../../src/main.cpp" />
+		<Unit filename="../../src/owDevice.cpp" />
+		<Unit filename="../../src/owDevice.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="2" line="2" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

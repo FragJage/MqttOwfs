@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="MqttOwfs - Tests" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release">
+				<Option output="bin/MqttOwfs" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="/Debug" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add option="-DWIN32" />
+					<Add directory="src" />
+					<Add directory="dependency" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="ws2_32" />
+				</Linker>
+			</Target>
+			<Target title="Debug">
+				<Option output="bin/MqttOwfs-Debug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="/Console" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add option="-DWIN32" />
+					<Add directory="src" />
+					<Add directory="dependency" />
+				</Compiler>
+				<Linker>
+					<Add library="ws2_32" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++11" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="xPLLib/src" />
+		</Compiler>
+		<Unit filename="../../dependency/Plateforms/Plateforms.cpp" />
+		<Unit filename="../../dependency/Plateforms/Plateforms.h" />
+		<Unit filename="../../dependency/SafeFunctions/SafeFunctions.cpp" />
+		<Unit filename="../../dependency/SafeFunctions/SafeFunctions.h" />
+		<Unit filename="../../dependency/Service/Service.cpp" />
+		<Unit filename="../../dependency/Service/Service.h" />
+		<Unit filename="../../dependency/SimpleFolders/SimpleFolders.cpp" />
+		<Unit filename="../../dependency/SimpleFolders/SimpleFolders.h" />
+		<Unit filename="../../dependency/SimpleIni/SimpleIni.cpp" />
+		<Unit filename="../../dependency/SimpleIni/SimpleIni.h" />
+		<Unit filename="../../dependency/SimpleLog/SimpleLog.cpp" />
+		<Unit filename="../../dependency/SimpleLog/SimpleLog.h" />
+		<Unit filename="../../dependency/SimpleLog/SimpleLog.inl" />
+		<Unit filename="../../dependency/StringTools/StringTools.cpp" />
+		<Unit filename="../../dependency/StringTools/StringTools.h" />
+		<Unit filename="../../dependency/Thread/mingw.mutex.h" />
+		<Unit filename="../../dependency/UnitTest/UnitTest.cpp" />
+		<Unit filename="../../dependency/UnitTest/UnitTest.h" />
+		<Unit filename="../../dependency/UnitTest/termcolor.h" />
+		<Unit filename="../../dependency/owfscpp/owfscpp.cpp" />
+		<Unit filename="../../dependency/owfscpp/owfscpp.h" />
+		<Unit filename="../../src/owDevice.cpp" />
+		<Unit filename="../../src/owDevice.h" />
+		<Unit filename="../../src/MqttOwfs.cpp" />
+		<Unit filename="../../src/MqttOwfs.h" />
+		<Unit filename="../../test/TestowDevice.cpp" />
+		<Unit filename="../../test/TestowDevice.h" />
+		<Unit filename="../../test/TestMqttOwfs.cpp" />
+		<Unit filename="../../test/TestMqttOwfs.h" />
+		<Unit filename="../../test/main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="2" line="2" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
