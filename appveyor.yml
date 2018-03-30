@@ -9,6 +9,3 @@ configuration: Release
 
 build:
   project: builds\msvc\MqttOwfs.sln
-  
-after_build:
- - builds\msvc\bin\Release\unittest.exe
