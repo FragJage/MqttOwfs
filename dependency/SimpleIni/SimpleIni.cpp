@@ -29,9 +29,8 @@ using namespace std;
 /*** Class SimpleIni                                                                                        ***/
 /***                                                                                                        ***/
 /**************************************************************************************************************/
-SimpleIni::SimpleIni(const string& filename)
+SimpleIni::SimpleIni(const string& filename) : m_OptionCommentCharacters(";#")
 {
-    m_OptionCommentCharacters = ";#";
     if(filename!="")
     {
         if(!Load(filename)) throw logic_error("Unable to open the file "+filename+" in read mode.");

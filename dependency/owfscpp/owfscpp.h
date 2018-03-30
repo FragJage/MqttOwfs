@@ -166,7 +166,7 @@ public:
     /// \param    server         IP address of owserver.
     /// \param    port           Port TCP address of owserver.
     /// \details  Constructor of owfscpp.
-    owfscpp(std::string server="", unsigned port=0);
+    owfscpp(const std::string& server="", unsigned port=0);
 
     /// \brief    Destructor of owfscpp
     /// \details  Destructor of owfscpp.
@@ -176,7 +176,7 @@ public:
     /// \param    server         IP address of owserver.
     /// \param    port           Port TCP address of owserver.
     /// \details  Define IP address and TCP port of owserver.
-    void Initialisation(std::string server, unsigned port);
+    void Initialisation(const std::string& server, unsigned port);
 
     /// \brief    Enable/Disable owserver flag
     /// \param    flag           enum Owserver Flag

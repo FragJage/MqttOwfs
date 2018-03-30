@@ -18,13 +18,13 @@ MqttClient::~MqttClient()
 		mosqpp::lib_cleanup();
 }
 
-void MqttClient::SetServer(std::string server, int port)
+void MqttClient::SetServer(const string& server, int port)
 {
 	m_Server = server;
 	m_Port = port;
 }
 
-void MqttClient::SetMainTopic(string mainTopic)
+void MqttClient::SetMainTopic(const string& mainTopic)
 {
     m_MainTopic = mainTopic;
     if(m_MainTopic.back() != '/') m_MainTopic.append("/");
@@ -60,14 +60,14 @@ int MqttClient::Close()
     return disconnect();
 }
 
-int MqttClient::Publish(std::string sensor, std::string value)
+int MqttClient::Publish(const string& sensor, const string& value)
 {
     string topic = m_MainTopic+sensor;
 
     return publish(nullptr, topic.c_str(), value.length(), value.c_str());
 }
 
-int MqttClient::Subscribe(std::string topic)
+int MqttClient::Subscribe(const string& topic)
 {
 	return subscribe(nullptr, topic.c_str());
 }

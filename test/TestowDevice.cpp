@@ -16,7 +16,8 @@ TestowDevice::~TestowDevice()
 bool TestowDevice::TestDisplayName()
 {
     owDevice myOw("MyDisplayName", "", 0);
-    assert("MyDisplayName"==myOw.GetDisplayName());
+	string displayName = myOw.GetDisplayName();
+    assert("MyDisplayName"== displayName);
 
     return true;
 }
@@ -24,15 +25,20 @@ bool TestowDevice::TestDisplayName()
 bool TestowDevice::TestRound()
 {
     owDevice myOw("MyDisplayName", "", 2);
-    assert(2==myOw.GetRound());
+	int round = myOw.GetRound();
+    assert(2== round);
     return true;
 }
 
 bool TestowDevice::TestValue()
 {
+	string value;
+
     owDevice myOw("MyDisplayName", "", 2, "5");
-    assert("5"==myOw.GetValue());
+	value = myOw.GetValue();
+    assert("5"== value);
     myOw.SetValue("ZZ");
-    assert("ZZ"==myOw.GetValue());
+	value = myOw.GetValue();
+	assert("ZZ"== value);
     return true;
 }

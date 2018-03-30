@@ -67,8 +67,8 @@ Service::Service(const string& name, const string& description, IService *servic
 
 Service::~Service()
 {
-    delete m_pName;
-    delete m_pDescription;
+    delete[] m_pName;
+    delete[] m_pDescription;
 	m_pInstance = nullptr;
 }
 
@@ -286,14 +286,13 @@ int Service::FindPid()
     vector<string>::const_iterator itEnd;
     char    buf[16];
     int	    pid = 0;
-    FILE    *fp;
 
 
     itEnd = m_runDirs.end();
     for (it = m_runDirs.begin(); it != itEnd; ++it)
     {
         m_pidFile = *it+"/"+m_daemonName+".pid";
-        fp = fopen(m_pidFile.c_str(), "r");
+        FILE *fp = fopen(m_pidFile.c_str(), "r");
         if(fp == NULL) continue;
 
         if(fgets(buf, sizeof(buf), fp) != NULL) pid = atoi(buf);
@@ -446,10 +445,8 @@ int Service::CmdRestart(int argc, char* argv[])
 /*** Class Service::Exception                                                                               ***/
 /***                                                                                                        ***/
 /**************************************************************************************************************/
-Service::Exception::Exception(int number, string const& message) throw()
+Service::Exception::Exception(int number, string const& message) throw() : m_number(number), m_message(message)
 {
-    m_number = number;
-    m_message = message;
 }
 
 Service::Exception::~Exception() throw()

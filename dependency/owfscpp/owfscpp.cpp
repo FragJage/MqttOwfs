@@ -28,7 +28,7 @@ using namespace std;
 /*** Class owfscpp                                                                               ***/
 /***                                                                                             ***/
 /***************************************************************************************************/
-owfscpp::owfscpp(string server, unsigned port) : m_OwfsServer(server), m_OwfsPort(port), m_Timeout(5000), m_Version(0), m_ControlFlags(0x00000100), m_Persistence(false), m_PersistenceMode(PERSISTENCE_CLOSE), m_OwfsSock()
+owfscpp::owfscpp(const string& server, unsigned port) : m_OwfsServer(server), m_OwfsPort(port), m_Timeout(5000), m_Version(0), m_ControlFlags(0x00000100), m_Persistence(false), m_PersistenceMode(PERSISTENCE_CLOSE), m_OwfsSock()
 {
 }
 
@@ -183,7 +183,7 @@ void owfscpp::SetPressureScale(PressureScale scale)
     }
 }
 
-void owfscpp::Initialisation(string server, unsigned port)
+void owfscpp::Initialisation(const string& server, unsigned port)
 {
     m_OwfsServer = server;
     m_OwfsPort = port;

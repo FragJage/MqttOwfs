@@ -10,9 +10,8 @@
 
 using namespace std;
 
-MqttOwfs::MqttOwfs() : m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_bServicePause(false), m_bServiceStop(false), m_OwfsClient(), m_MqttClient()
+MqttOwfs::MqttOwfs() : m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_bServicePause(false), m_bServiceStop(false), m_OwfsClient(), m_MqttClient(), m_logFile("")
 {
-	m_logFile = "";
 	m_Log = &m_SimpleLog;
 	m_SimpleLog.SetFilter(&m_logFilter);
 	m_SimpleLog.SetWriter(&m_logWriter);

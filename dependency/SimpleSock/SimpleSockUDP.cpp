@@ -53,7 +53,6 @@ string SimpleSockUDP::LocalAddress(const string& interfaceName="")
     struct in_addr netmaskAddr;
     struct in_addr interfaceAddr;
     bool bOK;
-	char str[INET_ADDRSTRLEN];
 
 
 	if((sockUDP = socket(AF_INET, SOCK_DGRAM, 0)) == -1) return "127.0.0.1";
@@ -65,9 +64,11 @@ string SimpleSockUDP::LocalAddress(const string& interfaceName="")
 
     closesocket(sockUDP);
 	if (bOK)
+	{
+		char str[INET_ADDRSTRLEN];
 		return string(inet_ntop(AF_INET, &interfaceAddr, str, INET_ADDRSTRLEN)); //inet_ntoa(interfaceAddr);
-    else
-        return "127.0.0.1";
+	}
+    return "127.0.0.1";
 }
 
 unsigned long SimpleSockUDP::BroadcastAddress(const string& interfaceName="")

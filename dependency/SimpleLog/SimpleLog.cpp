@@ -116,13 +116,8 @@ string SimpleLog::Level2String(SimpleLog::Level level)
 //***  CLASS SimpleLog::Line																							*/
 //***																													*/
 //***********************************************************************************************************************
-SimpleLog::Line::Line(SimpleLog* log, SimpleLog::Level level, const std::string& module, int line, const std::string& function)
+SimpleLog::Line::Line(SimpleLog* log, SimpleLog::Level level, const std::string& module, int line, const std::string& function) : m_log(log), m_level(level), m_module(module), m_line(line), m_function(function)
 {
-	m_log = log;
-	m_level = level;
-	m_module = module;
-	m_line = line;
-	m_function = function;
 	m_message = new std::ostringstream();
 }
 
@@ -137,29 +132,21 @@ SimpleLog::Line::~Line()
 //***  CLASS DefaultFilter																								*/
 //***																													*/
 //***********************************************************************************************************************
-SimpleLog::DefaultFilter::DefaultFilter()
+SimpleLog::DefaultFilter::DefaultFilter() : m_module(""), m_function("")
 {
     #ifdef DEBUG
 	m_level = SimpleLog::LVL_VERBOSE;
 	#else
 	m_level = SimpleLog::LVL_ERROR;
 	#endif
-	m_module = "";
-	m_function = "";
 }
 
-SimpleLog::DefaultFilter::DefaultFilter(SimpleLog::Level level)
+SimpleLog::DefaultFilter::DefaultFilter(SimpleLog::Level level) : m_level(level), m_module(""), m_function("")
 {
-	m_level = level;
-	m_module = "";
-	m_function = "";
 }
 
-SimpleLog::DefaultFilter::DefaultFilter(SimpleLog::Level level, const std::string& module, const std::string& function)
+SimpleLog::DefaultFilter::DefaultFilter(SimpleLog::Level level, const std::string& module, const std::string& function) : m_level(level), m_module(module), m_function(function)
 {
-	m_level = level;
-	m_module = module;
-	m_function = function;
 }
 
 SimpleLog::DefaultFilter::~DefaultFilter()

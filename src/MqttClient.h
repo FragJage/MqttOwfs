@@ -11,8 +11,8 @@ class MqttClient : public mosqpp::mosquittopp
         MqttClient();
         ~MqttClient();
 
-		void SetServer(std::string server, int port);
-		void SetMainTopic(std::string mainTopic);
+		void SetServer(const std::string& server, int port);
+		void SetMainTopic(const std::string& mainTopic);
         void SetKeepAlive(int keepalive);
 		void SetMessageCallback(IMqttMessage* messageCallback);
         std::string GetMainTopic();
@@ -20,8 +20,8 @@ class MqttClient : public mosqpp::mosquittopp
 
         int Open();
         int Close();
-        int Publish(std::string sensor, std::string value);
-		int Subscribe(std::string topic);
+        int Publish(const std::string& sensor, const std::string& value);
+		int Subscribe(const std::string& topic);
         int Loop(int timeout);
         std::string GetErrorMessage(int errorNo);
 
