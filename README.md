@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.org/FragJage/xPLOwfs.svg?branch=master)](https://travis-ci.org/FragJage/xPLOwfs)
-[![Coverage Status](https://coveralls.io/repos/github/FragJage/xPLOwfs/badge.svg?branch=master&bust=1)](https://coveralls.io/github/FragJage/xPLOwfs?branch=master)
-[![Coverity Scan Build](https://scan.coverity.com/projects/10801/badge.svg)](https://scan.coverity.com/projects/10801)
+[![Build Status](https://travis-ci.org/FragJage/MqttOwfs.svg?branch=master)](https://travis-ci.org/FragJage/MqttOwfs)
+[![Build status](https://ci.appveyor.com/api/projects/status/tdsue1qduo31wa17?svg=true)](https://ci.appveyor.com/project/FragJage/mqttowfs)
+[![Coverage Status](https://coveralls.io/repos/github/FragJage/MqttOwfs/badge.svg?branch=master&bust=1)](https://coveralls.io/github/FragJage/MqttOwfs?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/402042548f424edb97592d5e8eb30eeb)](https://www.codacy.com/app/FragJage/MqttOwfs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FragJage/MqttOwfs&amp;utm_campaign=Badge_Grade)
+
 MqttOwfs
 =========
 Mqtt daemon to communicate with one wire device. 
@@ -16,8 +18,8 @@ Features
  - Automatic detection of devices 
  - Supported device without configuration file DS2405, DS18S20, DS1920, DS2406, DS2407, DS2423, DS2450, DS1921, DS1822, DS2438, DS18B20, DS2408, DS2413, DS18B25
  - All devices are supported by simple configuration file
- - OWFS can be install on another server
- - It's possible to set temperature and pressure unit
+ - OWFS can be install to another server
+ - Possibility to set temperature and pressure unit
 
 Portability
 ===========

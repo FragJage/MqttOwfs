@@ -15,13 +15,15 @@ addons:
       - g++-4.9
       - valgrind
       - owfs
+	  - mosquitto
+	  - libmosquitto-devel
     
 install:
   - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
   - sudo /etc/init.d/owhttpd stop
   - sudo /etc/init.d/owftpd stop
   - sudo /etc/init.d/owserver stop
-  - sudo cp /home/travis/build/FragJage/xPLOwfs/owfs.conf /etc/owfs.conf
+  - sudo cp /home/travis/build/FragJage/MqttOwfs/owfs.conf /etc/owfs.conf
   - sudo /etc/init.d/owserver start
 
 script:
