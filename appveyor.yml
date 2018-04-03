@@ -3,9 +3,12 @@ branches:
     - master
 
 image: Visual Studio 2015
-
 configuration: Release
 platform: x86
+
+install:
+ - appveyor DownloadFile https://mosquitto.org/files/binary/win32/mosquitto-1.3.5-install-win32.exe
+ - mosquitto-1.3.5-install-win32.exe /S
 
 build:
   project: builds\msvc\MqttOwfs.sln
