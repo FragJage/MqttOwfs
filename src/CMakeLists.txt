@@ -77,9 +77,7 @@ add_executable(
   main.cpp
 )
 
-target_link_libraries(xPLOwfs)
-
 #Spécification WIN32
 if(WIN32)
-  target_link_libraries(xPLOwfs ws2_32)
+  target_link_libraries(MqttOwfs ws2_32)
 endif()
