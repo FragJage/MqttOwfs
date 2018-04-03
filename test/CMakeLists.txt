@@ -16,6 +16,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0") # debug, no optimisation
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage") # enabling coverage
 
 include_directories(../dependency)
+message(STATUS "libmosquitto: ${MOSQUITTO_INCLUDE_DIRS} ${MOSQUITTO_LIBRARIES}")
+include_directories(${MOSQUITTO_INCLUDE_DIRS})
  
 #Génération de la liste des fichiers sources
 file(
@@ -106,7 +108,8 @@ add_executable(
   main.cpp
 )
 
-target_link_libraries(unittest ${CMAKE_THREAD_LIBS_INIT} )
+target_link_libraries(unittest ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unittest ${MOSQUITTO_LIBRARIES})
 
 #Spécification WIN32
 if(WIN32)
