@@ -4,7 +4,6 @@ branches:
 
 image: Visual Studio 2015
 
-platform: Win32
 configuration: Release
 
 build:
