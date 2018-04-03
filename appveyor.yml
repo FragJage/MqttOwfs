@@ -5,7 +5,7 @@ branches:
 image: Visual Studio 2015
 
 configuration: Release
-plateform: x86
+platform: x86
 
 build:
   project: builds\msvc\MqttOwfs.sln
