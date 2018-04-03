@@ -16,7 +16,7 @@ addons:
       - valgrind
       - owfs
       - mosquitto
-      - libmosquitto-dev
+      - libmosquitto0-dev
     
 install:
   - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
