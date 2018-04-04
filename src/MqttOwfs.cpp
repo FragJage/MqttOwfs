@@ -10,7 +10,8 @@
 
 using namespace std;
 
-MqttOwfs::MqttOwfs() : m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_bServicePause(false), m_bServiceStop(false), m_OwfsClient(), m_MqttClient(), m_logFile("")
+
+MqttOwfs::MqttOwfs() : m_logFile(""), m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_bServicePause(false), m_bServiceStop(false), m_OwfsClient(), m_MqttClient()
 {
 	m_Log = &m_SimpleLog;
 	m_SimpleLog.SetFilter(&m_logFilter);
@@ -374,7 +375,7 @@ string MqttOwfs::OwGetValue(const string& configName, int round)
     return s.str();
 }
 
-void MqttOwfs::OwDeviceAdd(const string& displayName, const string& configName, int round, const string& unit)
+void MqttOwfs::OwDeviceAdd(const string& displayName, const string& configName, int round)
 {
     string value;
 
