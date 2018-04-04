@@ -28,7 +28,7 @@ install:
   - sudo /etc/init.d/owserver start
 
 script:
-  cat /usr/include/mosquittopp.h
+  cat /usr/include/mosquittopp.h;
   cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER);
   make;
   ./test/bin/unittest;
