@@ -9,8 +9,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -Wshadow -Wunused-variable -Wun
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s -O2") # no debug, active optimisation
 
 include_directories(../dependency)
-message(STATUS "libmosquitto: ${MOSQUITTO_INCLUDE_DIRS} ${MOSQUITTO_LIBRARIES}")
 include_directories(${MOSQUITTO_INCLUDE_DIRS})
+include_directories(${MOSQUITTOPP_INCLUDE_DIRS})
  
 #Génération de la liste des fichiers sources
 file(
@@ -80,6 +80,7 @@ add_executable(
 )
 
 target_link_libraries(MqttOwfs ${MOSQUITTO_LIBRARIES})
+target_link_libraries(MqttOwfs ${MOSQUITTOPP_LIBRARIES})
 
 #Spécification WIN32
 if(WIN32)

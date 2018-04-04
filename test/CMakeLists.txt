@@ -16,8 +16,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0") # debug, no optimisation
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage") # enabling coverage
 
 include_directories(../dependency)
-message(STATUS "libmosquitto: ${MOSQUITTO_INCLUDE_DIRS} ${MOSQUITTO_LIBRARIES}")
 include_directories(${MOSQUITTO_INCLUDE_DIRS})
+include_directories(${MOSQUITTOPP_INCLUDE_DIRS})
  
 #Génération de la liste des fichiers sources
 file(
@@ -101,6 +101,7 @@ add_executable(
   ${StringTools_files}
   ${Thread_files}
   ${UnitTest_files}
+  ../src/MqttClient.cpp
   ../src/MqttOwfs.cpp
   ../src/owDevice.cpp
   TestowDevice.cpp
@@ -110,6 +111,7 @@ add_executable(
 
 target_link_libraries(unittest ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(unittest ${MOSQUITTO_LIBRARIES})
+target_link_libraries(unittest ${MOSQUITTOPP_LIBRARIES})
 
 #Spécification WIN32
 if(WIN32)
