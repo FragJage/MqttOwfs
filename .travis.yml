@@ -17,7 +17,7 @@ addons:
       - owfs
       - mosquitto
       - libmosquitto0-dev
-      - libmosquittopp-dev
+      - libmosquittopp0-dev
     
 install:
   - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
