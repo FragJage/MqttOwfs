@@ -16,10 +16,12 @@ addons:
       - valgrind
       - owfs
       - mosquitto
-      - libmosquitto1-dev
-      - libmosquittopp1-dev
     
 install:
+  - sudo apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
+  - sudo apt-get update
+  - sudo apt-get install libmosquitto1-dev
+  - sudo apt-get install libmosquittopp1-dev
   - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
   - sudo /etc/init.d/owhttpd stop
   - sudo /etc/init.d/owftpd stop
