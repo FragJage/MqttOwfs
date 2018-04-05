@@ -32,12 +32,10 @@ install:
   - sudo /etc/init.d/owserver start
 
 script:
-  cat /usr/include/mosquitto.h;
-  cat /usr/include/mosquittopp.h;
   cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER);
   make;
   ./test/bin/unittest;
-  valgrind --error-exitcode=1 --leak-check=full ./test/bin/unittest;
 
 after_success:
+  valgrind --error-exitcode=1 --leak-check=full ./test/bin/unittest;
   coveralls --include src --gcov-options '\-lp' --gcov 'gcov-4.9';
