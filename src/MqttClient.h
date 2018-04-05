@@ -4,7 +4,13 @@
 #include <string>
 #include "mosquittopp.h"
 
-class MqttClient : public mosqpp::mosquittopp
+#if LIBMOSQUITTO_MAJOR > 0
+	#define MOSQUITTO_NS mosqpp
+#else
+	#define MOSQUITTO_NS mosquittopp
+#endif
+
+class MqttClient : public MOSQUITTO_NS::mosquittopp
 {
     public:
 		class IMqttMessage;
