@@ -24,7 +24,7 @@ before_install:
   - sudo apt-get install libmosquittopp-dev
 
 install:
-  - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
+  - sudo pip install -U "cpp-coveralls"
   - sudo /etc/init.d/owhttpd stop
   - sudo /etc/init.d/owftpd stop
   - sudo /etc/init.d/owserver stop
