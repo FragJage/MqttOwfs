@@ -20,17 +20,17 @@ TestMqttOwfs::~TestMqttOwfs()
 
 void TestMqttOwfs::ThreadStart(MqttOwfs* pMqttDev)
 {
-    char exeName[] = "test";
+	char exeName[] = "test";
 	char confArg[] = "--configfile";
-    char confName[] = "MqttOwfs.conf";
+	char confName[] = "MqttOwfs.conf";
 	char levelArg[] = "--loglevel";
 	char levelName[] = "2";
 	char destArg[] = "--logdestination";
 	char destName[] = "cout";
 	char* argv[7];
 
-    argv[0] = exeName;
-    argv[1] = confArg;
+	argv[0] = exeName;
+	argv[1] = confArg;
 	argv[2] = confName;
 	argv[3] = levelArg;
 	argv[4] = levelName;
@@ -44,14 +44,29 @@ void TestMqttOwfs::on_message(const string& topic, const string& message)
 	m_Messages[topic] = message;
 }
 
+void TestMqttOwfs::waitMsg()
+{
+	size_t nb = 0;
+	
+	for(int i=0; i<10; i++)
+	{
+		mqttClient.Loop(110);
+		if(nb != m_Messages.size())
+		{
+			nb = m_Messages.size();
+			i--;
+		}
+	}
+}
+
 bool TestMqttOwfs::Start()
 {
 	thread integrationTest(ThreadStart, &mqttOwfs);
 	integrationTest.detach();
 	
-	for(int i=0; i<10; i++)
-		mqttClient.Loop(110);
 
+	waitMsg();
+	
 	map<string, string>::iterator it;
 	it = m_Messages.find("owfs/10.2DCF462904B4");
 	assert(m_Messages.end() != it);
@@ -67,16 +82,25 @@ bool TestMqttOwfs::Start()
 
 bool TestMqttOwfs::DeviceRefresh()
 {
+	mqttClient.Publish("owfs/command/05.78D868A7FF3F", "REQUEST");
+	waitMsg();
+	
+	map<string, string>::iterator it;
+	it = m_Messages.find("owfs/05.78D868A7FF3F");
+	assert(m_Messages.end() != it);
+
+	m_Messages.clear();
+
 	return true;
 }
 
 bool TestMqttOwfs::Stop()
 {
 	mqttOwfs.ServicePause(true);
-    Plateforms::delay(550);
+	Plateforms::delay(550);
 	mqttOwfs.ServicePause(false);
 	mqttOwfs.ServiceStop();
 
-    Plateforms::delay(200);
-    return true;
+	Plateforms::delay(200);
+	return true;
 }

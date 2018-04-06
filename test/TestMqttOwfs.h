@@ -13,15 +13,17 @@ class TestMqttOwfs : public TestClass<TestMqttOwfs>, public MqttClient::IMqttMes
 {
 public:
 	TestMqttOwfs();
-    ~TestMqttOwfs();
-    static void ThreadStart(MqttOwfs* pMqttOwfs);
+	~TestMqttOwfs();
+	static void ThreadStart(MqttOwfs* pMqttOwfs);
 	void on_message(const std::string& topic, const std::string& message);
 
-    bool Start();
+	bool Start();
 	bool DeviceRefresh();
 	bool Stop();
-
-    MqttOwfs mqttOwfs;
+	
+private:
+	void waitMsg();
+	MqttOwfs mqttOwfs;
 	MqttClient mqttClient;
 	std::map<std::string, std::string> m_Messages;
 };

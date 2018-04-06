@@ -551,7 +551,7 @@ void MqttOwfs::on_message(const string& topic, const string& message)
 
 	if (topic.length() == mainTopic.length() + 7) return MessageForService(message);
 
-	string device = topic.substr(mainTopic.length() + 7);
+	string device = topic.substr(mainTopic.length() + 8);
 	return MessageForDevice(device, message);
 }
 
