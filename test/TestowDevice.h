@@ -10,6 +10,7 @@ public:
     TestowDevice();
     ~TestowDevice();
 
+	bool TestCopyConstructor();
     bool TestDisplayName();
     bool TestRound();
     bool TestValue();

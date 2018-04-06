@@ -5,6 +5,7 @@ using namespace std;
 TestMqttOwfs::TestMqttOwfs() : TestClass("MqttOwfs", this)
 {
 	addTest("Start", &TestMqttOwfs::Start);
+	addTest("DeviceRefresh", &TestMqttOwfs::DeviceRefresh);
 	addTest("Stop", &TestMqttOwfs::Stop);
 
 	mqttClient.SetMessageCallback(this);
@@ -20,12 +21,22 @@ TestMqttOwfs::~TestMqttOwfs()
 void TestMqttOwfs::ThreadStart(MqttOwfs* pMqttDev)
 {
     char exeName[] = "test";
-    char confName[] = "config";
-    char* argv[2];
+	char confArg[] = "--configfile";
+    char confName[] = "MqttOwfs.conf";
+	char levelArg[] = "--loglevel";
+	char levelName[] = "2";
+	char destArg[] = "--logdestination";
+	char destName[] = "cout";
+	char* argv[7];
 
-    argv[0]= exeName;
-    argv[1]= confName;
-	pMqttDev->ServiceStart(2, argv);
+    argv[0] = exeName;
+    argv[1] = confArg;
+	argv[2] = confName;
+	argv[3] = levelArg;
+	argv[4] = levelName;
+	argv[5] = destArg;
+	argv[6] = destName;
+	pMqttDev->ServiceStart(7, argv);
 }
 
 void TestMqttOwfs::on_message(const string& topic, const string& message)
@@ -51,6 +62,11 @@ bool TestMqttOwfs::Start()
 
 	m_Messages.clear();
 
+	return true;
+}
+
+bool TestMqttOwfs::DeviceRefresh()
+{
 	return true;
 }
 

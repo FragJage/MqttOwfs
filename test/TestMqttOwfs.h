@@ -18,7 +18,8 @@ public:
 	void on_message(const std::string& topic, const std::string& message);
 
     bool Start();
-    bool Stop();
+	bool DeviceRefresh();
+	bool Stop();
 
     MqttOwfs mqttOwfs;
 	MqttClient mqttClient;
