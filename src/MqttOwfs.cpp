@@ -16,10 +16,10 @@ MqttOwfs::MqttOwfs() : m_logFile(""), m_RefreshDevicesInterval(90), m_RefreshVal
 	m_Log = &m_SimpleLog;
 	m_SimpleLog.SetFilter(&m_logFilter);
 	m_SimpleLog.SetWriter(&m_logWriter);
-	
+
 	m_ConfigFilename = SimpleFolders::AddFile(SimpleFolders::GetFolder(SimpleFolders::FolderType::User), ".MqttOwfs", "conf");
 	if (!SimpleFolders::FileExists(m_ConfigFilename)) m_ConfigFilename = "";
-	
+
 	m_OwfsClient.Initialisation("127.0.0.1", 4304);
 	m_MqttClient.SetMainTopic("owfs");
 }
@@ -429,19 +429,23 @@ void MqttOwfs::OwDeviceAdd(const string& name)
     LOG_VERBOSE(m_Log) << "Device found " << name;
 }
 
+void MqttOwfs::RefreshValue(const string& name, owDevice& device)
+{
+    string value;
+
+        value = OwGetValue(name, device.GetRound());
+        if(value==device.GetValue()) return;
+        device.SetValue(value);
+        m_MqttClient.Publish(device.GetDisplayName(), value);
+}
+
 void MqttOwfs::RefreshValues()
 {
     std::map<std::string, owDevice>::iterator it;
-    string value;
 
 
     for(it=m_OwDevices.begin(); it!=m_OwDevices.end(); ++it)
-    {
-        value = OwGetValue(it->first, it->second.GetRound());
-        if(value==it->second.GetValue()) continue;
-        it->second.SetValue(value);
-        m_MqttClient.Publish(it->second.GetDisplayName(), value);
-    }
+	RefreshValue(it->first, it->second);
 }
 
 void MqttOwfs::Refresh()
@@ -506,7 +510,7 @@ void MqttOwfs::MessageForDevice(const string& device, const string& msg)
 	{
 		if (it->second.GetDisplayName() == device) break;
 	}
-	
+
 	if (it == m_OwDevices.end())
 	{
 		LOG_WARNING(m_Log) << "Unknown device " << device;
@@ -529,13 +533,15 @@ void MqttOwfs::MessageForDevice(const string& device, const string& msg)
 		m_OwfsClient.Write(it->first, msg);
 	}
 
+	RefreshValue(it->first, it->second);
+
 	return;
 }
 
 void MqttOwfs::on_message(const string& topic, const string& message)
 {
 	LOG_VERBOSE(m_Log) << "Mqtt receive " << topic << " : " << message;
-	
+
 	string mainTopic = m_MqttClient.GetMainTopic();
 	if (topic.substr(0, mainTopic.length()) != mainTopic)
 	{

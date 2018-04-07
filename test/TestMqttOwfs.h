@@ -19,8 +19,10 @@ public:
 
 	bool Start();
 	bool DeviceRefresh();
+	bool DeviceSet();
+	bool Commands();
 	bool Stop();
-	
+
 private:
 	void waitMsg();
 	MqttOwfs mqttOwfs;

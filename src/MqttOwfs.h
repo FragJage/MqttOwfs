@@ -43,6 +43,7 @@ class MqttOwfs : public Service::IService, public MqttClient::IMqttMessage
 	void MessageForDevice(const std::string& device, const std::string& msg);
 		
 	void Refresh();
+	void RefreshValue(const std::string& name, owDevice& device);
 	void RefreshValues();
 	void RefreshDevices();
 

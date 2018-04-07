@@ -6,6 +6,8 @@ TestMqttOwfs::TestMqttOwfs() : TestClass("MqttOwfs", this)
 {
 	addTest("Start", &TestMqttOwfs::Start);
 	addTest("DeviceRefresh", &TestMqttOwfs::DeviceRefresh);
+	addTest("DeviceSet", &TestMqttOwfs::DeviceSet);
+	addTest("Commands", &TestMqttOwfs::Commands);
 	addTest("Stop", &TestMqttOwfs::Stop);
 
 	mqttClient.SetMessageCallback(this);
@@ -47,7 +49,7 @@ void TestMqttOwfs::on_message(const string& topic, const string& message)
 void TestMqttOwfs::waitMsg()
 {
 	size_t nb = 0;
-	
+
 	for(int i=0; i<10; i++)
 	{
 		mqttClient.Loop(110);
@@ -63,10 +65,10 @@ bool TestMqttOwfs::Start()
 {
 	thread integrationTest(ThreadStart, &mqttOwfs);
 	integrationTest.detach();
-	
+
 
 	waitMsg();
-	
+
 	map<string, string>::iterator it;
 	it = m_Messages.find("owfs/10.2DCF462904B4");
 	assert(m_Messages.end() != it);
@@ -84,11 +86,56 @@ bool TestMqttOwfs::DeviceRefresh()
 {
 	mqttClient.Publish("owfs/command/05.78D868A7FF3F", "REQUEST");
 	waitMsg();
-	
+
 	map<string, string>::iterator it;
 	it = m_Messages.find("owfs/05.78D868A7FF3F");
 	assert(m_Messages.end() != it);
 
+	m_Messages.clear();
+
+	return true;
+}
+
+bool TestMqttOwfs::DeviceSet()
+{
+
+	mqttClient.Publish("owfs/command/29.2BF1FCD97A96", "255");
+	waitMsg();
+
+	map<string, string>::iterator it;
+	it = m_Messages.find("owfs/29.2BF1FCD97A96");
+	assert(m_Messages.end() != it);
+
+	m_Messages.clear();
+
+	return true;
+}
+
+bool TestMqttOwfs::Commands()
+{
+	map<string, string>::iterator it;
+
+	mqttClient.Publish("owfs/command", "REQUEST");
+	waitMsg();
+	it = m_Messages.find("owfs/05.78D868A7FF3F");
+	assert(m_Messages.end() != it);
+	m_Messages.clear();
+
+	mqttClient.Publish("owfs/command", "REFRESH_DEVICES");
+	waitMsg();
+	assert(0 < m_Messages.size());
+	m_Messages.clear();
+
+	mqttClient.Publish("owfs/command", "REFRESH_VALUES");
+	waitMsg();
+	assert(0 < m_Messages.size());
+	m_Messages.clear();
+
+	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
+	waitMsg();
+	Plateforms::delay(505);
+	waitMsg();
+	assert(1 == m_Messages.size());
 	m_Messages.clear();
 
 	return true;
@@ -100,7 +147,7 @@ bool TestMqttOwfs::Stop()
 	Plateforms::delay(550);
 	mqttOwfs.ServicePause(false);
 	mqttOwfs.ServiceStop();
+	Plateforms::delay(600);
 
-	Plateforms::delay(200);
 	return true;
 }
