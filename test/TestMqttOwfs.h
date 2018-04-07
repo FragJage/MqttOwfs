@@ -21,6 +21,7 @@ public:
 	bool DeviceRefresh();
 	bool DeviceSet();
 	bool Commands();
+	bool CoverageConfig();
 	bool Stop();
 
 private:

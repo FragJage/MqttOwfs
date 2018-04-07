@@ -26,13 +26,13 @@ class MqttOwfs : public Service::IService, public MqttClient::IMqttMessage
 	void ServicePause(bool bPause);
 	void ServiceStop();
 	void on_message(const std::string& topic, const std::string& message);
+	void SetConfigfile(const std::string& configFile);
 
     private:
 	void SetLogLevel(const std::string& level);
 	void SetLogDestination(const std::string& destination);
-	void SetConfigfile(const std::string& configFile);
 	void ReadParameters(int argc, char* argv[]);
-		
+
 	void Configure();
 	void OwfsConfigure(SimpleIni& iniFile);
 	void MqttConfigure(SimpleIni& iniFile);
@@ -41,7 +41,7 @@ class MqttOwfs : public Service::IService, public MqttClient::IMqttMessage
 
 	void MessageForService(const std::string& msg);
 	void MessageForDevice(const std::string& device, const std::string& msg);
-		
+
 	void Refresh();
 	void RefreshValue(const std::string& name, owDevice& device);
 	void RefreshValues();
@@ -58,7 +58,7 @@ class MqttOwfs : public Service::IService, public MqttClient::IMqttMessage
 	SimpleLog m_SimpleLog;
 	SimpleLog::DefaultWriter m_logWriter;
 	SimpleLog::DefaultFilter m_logFilter;
-		
+
 	std::map<std::string, owDevice> m_OwDevices;
         int m_RefreshDevicesInterval;
         int m_RefreshValuesInterval;
