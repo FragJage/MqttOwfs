@@ -15,10 +15,11 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
-					<Add option="-DWIN32" />
+					<Add option="-m64" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-m64" />
 				</Linker>
 			</Target>
 			<Target title="Debug">
@@ -32,7 +33,6 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
-					<Add option="-DWIN32" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -41,15 +41,13 @@
 			<Add option="-std=c++11" />
 			<Add option="-m32" />
 			<Add option="-fexceptions" />
-			<Add directory="C:/Program Files (x86)/mosquitto/devel" />
 			<Add directory="../../dependency" />
 			<Add directory="../../src" />
 		</Compiler>
 		<Linker>
 			<Add option="-m32" />
-			<Add library="ws2_32" />
 			<Add library="mosquittopp" />
-			<Add directory="C:/Program Files (x86)/mosquitto/devel" />
+			<Add directory="/usr/lib/x86_64-linux-gnu" />
 		</Linker>
 		<Unit filename="../../dependency/Plateforms/Plateforms.cpp" />
 		<Unit filename="../../dependency/Plateforms/Plateforms.h" />

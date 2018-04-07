@@ -8,6 +8,7 @@
 		<Build>
 			<Target title="Release">
 				<Option output="bin/MqttOwfs" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../.." />
 				<Option object_output="obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -15,13 +16,9 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
-					<Add option="-DWIN32" />
-					<Add directory="src" />
-					<Add directory="dependency" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="ws2_32" />
 				</Linker>
 			</Target>
 			<Target title="Debug">
@@ -35,21 +32,23 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
-					<Add option="-DWIN32" />
-					<Add directory="src" />
-					<Add directory="dependency" />
 				</Compiler>
-				<Linker>
-					<Add library="ws2_32" />
-				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-std=c++11" />
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add option="-m64" />
 			<Add option="-fexceptions" />
-			<Add directory="xPLLib/src" />
+			<Add directory="../../src" />
+			<Add directory="../../dependency" />
 		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+			<Add library="mosquittopp" />
+			<Add library="pthread" />
+			<Add directory="/usr/lib/x86_64-linux-gnu" />
+		</Linker>
 		<Unit filename="../../dependency/Plateforms/Plateforms.cpp" />
 		<Unit filename="../../dependency/Plateforms/Plateforms.h" />
 		<Unit filename="../../dependency/SafeFunctions/SafeFunctions.cpp" />
@@ -63,6 +62,10 @@
 		<Unit filename="../../dependency/SimpleLog/SimpleLog.cpp" />
 		<Unit filename="../../dependency/SimpleLog/SimpleLog.h" />
 		<Unit filename="../../dependency/SimpleLog/SimpleLog.inl" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSock.cpp" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSock.h" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSockTCP.cpp" />
+		<Unit filename="../../dependency/SimpleSock/SimpleSockTCP.h" />
 		<Unit filename="../../dependency/StringTools/StringTools.cpp" />
 		<Unit filename="../../dependency/StringTools/StringTools.h" />
 		<Unit filename="../../dependency/Thread/mingw.mutex.h" />
@@ -71,14 +74,16 @@
 		<Unit filename="../../dependency/UnitTest/termcolor.h" />
 		<Unit filename="../../dependency/owfscpp/owfscpp.cpp" />
 		<Unit filename="../../dependency/owfscpp/owfscpp.h" />
-		<Unit filename="../../src/owDevice.cpp" />
-		<Unit filename="../../src/owDevice.h" />
+		<Unit filename="../../src/MqttClient.cpp" />
+		<Unit filename="../../src/MqttClient.h" />
 		<Unit filename="../../src/MqttOwfs.cpp" />
 		<Unit filename="../../src/MqttOwfs.h" />
-		<Unit filename="../../test/TestowDevice.cpp" />
-		<Unit filename="../../test/TestowDevice.h" />
+		<Unit filename="../../src/owDevice.cpp" />
+		<Unit filename="../../src/owDevice.h" />
 		<Unit filename="../../test/TestMqttOwfs.cpp" />
 		<Unit filename="../../test/TestMqttOwfs.h" />
+		<Unit filename="../../test/TestowDevice.cpp" />
+		<Unit filename="../../test/TestowDevice.h" />
 		<Unit filename="../../test/main.cpp" />
 		<Extensions>
 			<code_completion />
