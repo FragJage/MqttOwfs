@@ -15,6 +15,7 @@ public:
 	TestMqttOwfs();
 	~TestMqttOwfs();
 	static void ThreadStart(MqttOwfs* pMqttOwfs);
+	static void ThreadConf(MqttOwfs* pMqttDev);
 	void on_message(const std::string& topic, const std::string& message);
 
 	bool Start();
