@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\dependency\MqttBase\MqttClient.cpp" />
+    <ClCompile Include="..\..\dependency\MqttBase\MqttDaemon.cpp" />
     <ClCompile Include="..\..\dependency\owfscpp\owfscpp.cpp" />
     <ClCompile Include="..\..\dependency\Plateforms\Plateforms.cpp" />
     <ClCompile Include="..\..\dependency\Service\Service.cpp" />
@@ -169,11 +171,12 @@
     <ClCompile Include="..\..\dependency\SimpleSock\SimpleSockTCP.cpp" />
     <ClCompile Include="..\..\dependency\SimpleSock\SimpleSockUDP.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
-    <ClCompile Include="..\..\src\MqttClient.cpp" />
     <ClCompile Include="..\..\src\MqttOwfs.cpp" />
     <ClCompile Include="..\..\src\owDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\dependency\MqttBase\MqttClient.h" />
+    <ClInclude Include="..\..\dependency\MqttBase\MqttDaemon.h" />
     <ClInclude Include="..\..\dependency\owfscpp\owfscpp.h" />
     <ClInclude Include="..\..\dependency\Plateforms\Plateforms.h" />
     <ClInclude Include="..\..\dependency\SafeFunctions\SafeFunctions.h" />
@@ -184,7 +187,6 @@
     <ClInclude Include="..\..\dependency\SimpleSock\SimpleSock.h" />
     <ClInclude Include="..\..\dependency\SimpleSock\SimpleSockTCP.h" />
     <ClInclude Include="..\..\dependency\SimpleSock\SimpleSockUDP.h" />
-    <ClInclude Include="..\..\src\MqttClient.h" />
     <ClInclude Include="..\..\src\MqttOwfs.h" />
     <ClInclude Include="..\..\src\owDevice.h" />
   </ItemGroup>

@@ -22,6 +22,12 @@ include_directories(${MOSQUITTOPP_INCLUDE_DIRS})
 #Génération de la liste des fichiers sources
 file(
   GLOB_RECURSE
+  Mqtt_files
+  ../dependency/MqttBase/*
+)
+
+file(
+  GLOB_RECURSE
   Owfs_files
   ../dependency/owfscpp/*
 )
@@ -90,6 +96,7 @@ file(
 set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 add_executable(
   unittest
+  ${Mqtt_files}
   ${Owfs_files}
   ${Plateforms_files}
   ${SafeFunctions_files}
@@ -101,7 +108,6 @@ add_executable(
   ${StringTools_files}
   ${Thread_files}
   ${UnitTest_files}
-  ../src/MqttClient.cpp
   ../src/MqttOwfs.cpp
   ../src/owDevice.cpp
   TestowDevice.cpp

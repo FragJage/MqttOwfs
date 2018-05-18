@@ -49,6 +49,10 @@
 			<Add library="pthread" />
 			<Add directory="/usr/lib/x86_64-linux-gnu" />
 		</Linker>
+		<Unit filename="../../dependency/MqttBase/MqttClient.cpp" />
+		<Unit filename="../../dependency/MqttBase/MqttClient.h" />
+		<Unit filename="../../dependency/MqttBase/MqttDaemon.cpp" />
+		<Unit filename="../../dependency/MqttBase/MqttDaemon.h" />
 		<Unit filename="../../dependency/Plateforms/Plateforms.cpp" />
 		<Unit filename="../../dependency/Plateforms/Plateforms.h" />
 		<Unit filename="../../dependency/SafeFunctions/SafeFunctions.cpp" />
@@ -74,8 +78,6 @@
 		<Unit filename="../../dependency/UnitTest/termcolor.h" />
 		<Unit filename="../../dependency/owfscpp/owfscpp.cpp" />
 		<Unit filename="../../dependency/owfscpp/owfscpp.h" />
-		<Unit filename="../../src/MqttClient.cpp" />
-		<Unit filename="../../src/MqttClient.h" />
 		<Unit filename="../../src/MqttOwfs.cpp" />
 		<Unit filename="../../src/MqttOwfs.h" />
 		<Unit filename="../../src/owDevice.cpp" />
