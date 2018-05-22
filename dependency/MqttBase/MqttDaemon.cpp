@@ -249,7 +249,7 @@ int MqttDaemon::ServiceStart(int argc, char* argv[])
 
     m_MqttClient.Close();
 	LOG_EXIT_OK;
-    return 0;
+    return ret;
 }
 
 void MqttDaemon::ServicePause(bool bPause)
