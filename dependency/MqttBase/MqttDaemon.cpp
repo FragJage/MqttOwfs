@@ -132,6 +132,7 @@ void MqttDaemon::Configure()
 
 	LogConfigure(iniFile);
 	MqttConfigure(iniFile);
+	DaemonConfigure(iniFile);
 }
 
 void MqttDaemon::MqttConfigure(SimpleIni& iniFile)
