@@ -20,6 +20,7 @@ class MqttDaemon : public Service::IService, public MqttClient::IMqttMessage
 		MqttDaemon(const std::string& topic, const std::string& configFileName);
         virtual ~MqttDaemon();
 
+		virtual void DaemonConfigure(SimpleIni& iniFile) = 0;
 		virtual int DaemonStart(int argc, char* argv[]) = 0;
 		virtual void on_message(const std::string& topic, const std::string& message)=0;
 		std::string GetMainTopic();
@@ -46,7 +47,6 @@ class MqttDaemon : public Service::IService, public MqttClient::IMqttMessage
 		void Configure();
 		void MqttConfigure(SimpleIni& iniFile);
 		void LogConfigure(SimpleIni& iniFile);
-		virtual void DaemonConfigure(SimpleIni& iniFile);
 
 		std::ofstream m_logStream;
 		std::string m_logFile;

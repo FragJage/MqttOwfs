@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -11,7 +12,7 @@
 using namespace std;
 
 
-MqttDaemon::MqttDaemon(const string& topic, const string& configFileName) : m_logFile(""), m_bServicePause(false), m_bServiceStop(false), m_MqttClient()
+MqttDaemon::MqttDaemon(const string& topic, const string& configFileName) : m_bServicePause(false), m_bServiceStop(false), m_logFile(""), m_MqttClient()
 {
 	m_Log = &m_SimpleLog;
 	m_SimpleLog.SetFilter(&m_logFilter);
@@ -175,10 +176,6 @@ void MqttDaemon::LogConfigure(SimpleIni& iniFile)
 		m_logFilter.SetFunction(svalue);
 		LOG_VERBOSE(m_Log) << "Set log Function to " << svalue;
 	}
-}
-
-void MqttDaemon::DaemonConfigure(SimpleIni& iniFile)
-{
 }
 
 void MqttDaemon::ReadParameters(int argc, char* argv[])
