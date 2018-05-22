@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/FragJage/MqttOwfs.svg?branch=master)](https://travis-ci.org/FragJage/MqttOwfs)
 [![Build status](https://ci.appveyor.com/api/projects/status/tdsue1qduo31wa17?svg=true)](https://ci.appveyor.com/project/FragJage/mqttowfs)
-[![Coverage Status](https://coveralls.io/repos/github/FragJage/MqttOwfs/badge.svg?branch=master&bust=1)](https://coveralls.io/github/FragJage/MqttOwfs?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/FragJage/MqttOwfs/badge.svg?branch=master&bust=2)](https://coveralls.io/github/FragJage/MqttOwfs?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/402042548f424edb97592d5e8eb30eeb)](https://www.codacy.com/app/FragJage/MqttOwfs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FragJage/MqttOwfs&amp;utm_campaign=Badge_Grade)
 
 MqttOwfs
@@ -23,17 +23,12 @@ Features
 
 Portability
 ===========
-TODO
 Unit tests passed successfully on :
- - Windows Seven (CPU Intel Celeron)
- - Linux Ubuntu (CPU Intel Atom)
- - Linux Raspian on Raspberry Pi (CPU ARM)
- - Linux FunPlug on NAS DNS-320 (CPU ARM)
-
-For more informations
-=====================
-TODO
-See documentation in doc/html/index.html
+ - Linux Ubuntu (CPU Intel Celeron)
+ - Windows 8 (CPU Intel Core I7)
+ - Linux on Travis plateform
+ - Windows on Appveyor plateform
+ - More plateform can be supported such as Raspberry pi
 
 Licence
 =======
