@@ -130,13 +130,6 @@ bool TestMqttOwfs::Commands()
 	assert(0 < m_Messages.size());
 	m_Messages.clear();
 
-	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	waitMsg();
-	Plateforms::delay(505);
-	waitMsg();
-	assert(1 == m_Messages.size());
-	m_Messages.clear();
-
 	return true;
 }
 
