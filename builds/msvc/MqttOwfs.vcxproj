@@ -87,16 +87,16 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;WIN32;_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\mosquitto\devel;..\..\dependency;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Lib\paho.mqtt.c\include;Lib\paho.mqtt.cpp\include;..\..\dependency;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;mosquittopp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\mosquitto\devel;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>paho-mqtt3a.lib;paho-mqttpp3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Lib\paho.mqtt.cpp\Debug;Lib\paho.mqtt.c;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,18 +123,18 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\mosquitto\devel;..\..\dependency;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Lib\paho.mqtt.c\include;Lib\paho.mqtt.cpp\include;..\..\dependency;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;mosquittopp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\mosquitto\devel;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>paho-mqtt3a.lib;paho-mqttpp3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Lib\paho.mqtt.cpp\Release;Lib\paho.mqtt.c;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\dependency\MqttBase\MqttBase.cpp" />
     <ClCompile Include="..\..\dependency\MqttBase\MqttClient.cpp" />
     <ClCompile Include="..\..\dependency\MqttBase\MqttDaemon.cpp" />
     <ClCompile Include="..\..\dependency\owfscpp\owfscpp.cpp" />
@@ -169,24 +170,22 @@
     <ClCompile Include="..\..\dependency\SimpleLog\SimpleLog.cpp" />
     <ClCompile Include="..\..\dependency\SimpleSock\SimpleSock.cpp" />
     <ClCompile Include="..\..\dependency\SimpleSock\SimpleSockTCP.cpp" />
-    <ClCompile Include="..\..\dependency\SimpleSock\SimpleSockUDP.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\MqttOwfs.cpp" />
     <ClCompile Include="..\..\src\owDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\dependency\MqttBase\MqttBase.h" />
     <ClInclude Include="..\..\dependency\MqttBase\MqttClient.h" />
     <ClInclude Include="..\..\dependency\MqttBase\MqttDaemon.h" />
     <ClInclude Include="..\..\dependency\owfscpp\owfscpp.h" />
     <ClInclude Include="..\..\dependency\Plateforms\Plateforms.h" />
-    <ClInclude Include="..\..\dependency\SafeFunctions\SafeFunctions.h" />
     <ClInclude Include="..\..\dependency\Service\Service.h" />
     <ClInclude Include="..\..\dependency\SimpleFolders\SimpleFolders.h" />
     <ClInclude Include="..\..\dependency\SimpleIni\SimpleIni.h" />
     <ClInclude Include="..\..\dependency\SimpleLog\SimpleLog.h" />
     <ClInclude Include="..\..\dependency\SimpleSock\SimpleSock.h" />
     <ClInclude Include="..\..\dependency\SimpleSock\SimpleSockTCP.h" />
-    <ClInclude Include="..\..\dependency\SimpleSock\SimpleSockUDP.h" />
     <ClInclude Include="..\..\src\MqttOwfs.h" />
     <ClInclude Include="..\..\src\owDevice.h" />
   </ItemGroup>

@@ -6,6 +6,7 @@
 #endif
 #include "Plateforms/Plateforms.h"
 #include "UnitTest/UnitTest.h"
+#include "MqttBase\MqttClient.h"
 #include "../src/MqttOwfs.h"
 
 
@@ -26,7 +27,7 @@ public:
 	bool Stop();
 
 private:
-	void waitMsg();
+	void waitMsg(size_t maxMsg, int maxTime);
 	MqttOwfs mqttOwfs;
 	MqttClient mqttClient;
 	std::map<std::string, std::string> m_Messages;

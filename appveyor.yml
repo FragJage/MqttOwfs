@@ -3,7 +3,7 @@ branches:
     - master
 
 image: Visual Studio 2015
-configuration: Release
+configuration: Debug
 platform: x86
 
 install:

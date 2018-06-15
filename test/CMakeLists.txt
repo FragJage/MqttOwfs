@@ -16,8 +16,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0") # debug, no optimisation
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage") # enabling coverage
 
 include_directories(../dependency)
-include_directories(${MOSQUITTO_INCLUDE_DIRS})
-include_directories(${MOSQUITTOPP_INCLUDE_DIRS})
  
 #Génération de la liste des fichiers sources
 file(
@@ -116,8 +114,8 @@ add_executable(
 )
 
 target_link_libraries(unittest ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(unittest ${MOSQUITTO_LIBRARIES})
-target_link_libraries(unittest ${MOSQUITTOPP_LIBRARIES})
+target_link_libraries(unittest paho-mqtt3a)
+target_link_libraries(unittest paho-mqttpp3)
 
 #Spécification WIN32
 if(WIN32)

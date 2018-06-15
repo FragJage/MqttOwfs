@@ -1,10 +1,19 @@
 #ifndef MQTTOWFS_H
 #define MQTTOWFS_H
 
-#include<map>
+#include <mutex>
+#include <queue>
+#include <map>
 #include "MqttBase/MqttDaemon.h"
 #include "owDevice.h"
 #include "owfscpp/owfscpp.h"
+
+struct MqttQueue
+{
+	MqttQueue(std::string topic, std::string msg) : Topic(topic), Message(msg) {};
+	std::string Topic;
+	std::string Message;
+};
 
 class MqttOwfs : public MqttDaemon
 {
@@ -12,7 +21,7 @@ class MqttOwfs : public MqttDaemon
         MqttOwfs();
         ~MqttOwfs();
 
-		int DaemonStart(int argc, char* argv[]);
+		int DaemonLoop(int argc, char* argv[]);
 		void on_message(const std::string& topic, const std::string& message);
 
     private:
@@ -21,9 +30,10 @@ class MqttOwfs : public MqttDaemon
 
 		void MessageForService(const std::string& msg);
 		void MessageForDevice(const std::string& device, const std::string& msg);
+		void SendMqttMessages();
 
 		void Refresh();
-		void RefreshValue(const std::string& name, owDevice& device);
+		bool RefreshValue(const std::string& name, owDevice& device);
 		void RefreshValues();
 		void RefreshDevices();
 
@@ -36,6 +46,10 @@ class MqttOwfs : public MqttDaemon
 		int m_RefreshDevicesInterval;
 		int m_RefreshValuesInterval;
 		owfscpp m_OwfsClient;
+
+		std::mutex m_MqttQueueAccess;
+		ServiceConditionVariable m_MqttQueueCond;
+		std::queue<MqttQueue> m_MqttQueue;
 };
 
 #endif // MQTTOWFS_H

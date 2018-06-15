@@ -12,7 +12,7 @@
 using namespace std;
 
 
-MqttDaemon::MqttDaemon(const string& topic, const string& configFileName) : m_bServicePause(false), m_bServiceStop(false), m_logFile(""), m_MqttClient()
+MqttDaemon::MqttDaemon(const string& topic, const string& configFileName) : m_logFile("")
 {
 	m_Log = &m_SimpleLog;
 	m_SimpleLog.SetFilter(&m_logFilter);
@@ -21,7 +21,7 @@ MqttDaemon::MqttDaemon(const string& topic, const string& configFileName) : m_bS
 	m_ConfigFilename = SimpleFolders::AddFile(SimpleFolders::GetFolder(SimpleFolders::FolderType::User), configFileName, "conf");
 	if (!SimpleFolders::FileExists(m_ConfigFilename)) m_ConfigFilename = "";
 
-	m_MqttClient.SetMainTopic(topic);
+	SetMainTopic(topic);
 }
 
 MqttDaemon::~MqttDaemon()
@@ -138,19 +138,24 @@ void MqttDaemon::Configure()
 void MqttDaemon::MqttConfigure(SimpleIni& iniFile)
 {
 	string svalue;
+	string id;
 	int ivalue;
 
-	svalue = iniFile.GetValue("mqtt", "server", "127.0.0.1");
-	ivalue = iniFile.GetValue("mqtt", "port", 1883);
-	m_MqttClient.SetServer(svalue, ivalue);
-	LOG_VERBOSE(m_Log) << "Connect to mqtt server " << svalue << ":" << ivalue;
+	svalue = iniFile.GetValue("mqtt", "server", "tcp://127.0.0.1:1883");
+	id = iniFile.GetValue("mqtt", "id", "");
+	SetServer(svalue, id);
+	LOG_VERBOSE(m_Log) << "Connect to mqtt server " << svalue;
 
 	ivalue = iniFile.GetValue("mqtt", "keepalive", 300);
-	m_MqttClient.SetKeepAlive(ivalue);
+	SetKeepAlive(ivalue);
 	LOG_VERBOSE(m_Log) << "Set mqtt keepalive to " << ivalue;
 
-	svalue = iniFile.GetValue("mqtt", "topic", "owfs");
-	m_MqttClient.SetMainTopic(svalue);
+	ivalue = iniFile.GetValue("mqtt", "timeout", 5);
+	SetTimeout(ivalue);
+	LOG_VERBOSE(m_Log) << "Set mqtt timeout to " << ivalue;
+
+	svalue = iniFile.GetValue("mqtt", "topic", "");
+	SetMainTopic(svalue);
 	LOG_VERBOSE(m_Log) << "Set mqtt topic to " << svalue;
 }
 
@@ -202,63 +207,17 @@ void MqttDaemon::ReadParameters(int argc, char* argv[])
 	}
 }
 
-string MqttDaemon::GetMainTopic()
+int MqttDaemon::ServiceLoop(int argc, char* argv[])
 {
-	return m_MqttClient.GetMainTopic();
-}
-
-int MqttDaemon::Subscribe(const string& topic)
-{
-	return m_MqttClient.Subscribe(topic);
-}
-
-void MqttDaemon::Publish(const string& sensor, const string& value)
-{
-	m_MqttClient.Publish(sensor, value);
-}
-
-int MqttDaemon::Loop(int timeout)
-{
-	return m_MqttClient.Loop(timeout);
-}
-
-string MqttDaemon::GetMqttErrorMessage(int errorNo)
-{
-	return m_MqttClient.GetErrorMessage(errorNo);
-}
-
-int MqttDaemon::ServiceStart(int argc, char* argv[])
-{
-	int ret;
 
 	LOG_ENTER;
-    m_bServiceStop = false;
-
 	ReadParameters(argc, argv);
 	Configure();
 
-	ret = m_MqttClient.Open();
-	if (ret != 0)
-	{
-		LOG_FATAL(m_Log) << "Unable to connect to mqtt server : " << m_MqttClient.GetErrorMessage(ret);
-		LOG_EXIT_KO;
-		return ret;
-	}
+	Connect();
+	int ret = DaemonLoop(argc, argv);
+    Disconnect();
 
-	m_MqttClient.SetMessageCallback(this);
-	ret = DaemonStart(argc, argv);
-
-    m_MqttClient.Close();
 	LOG_EXIT_OK;
     return ret;
-}
-
-void MqttDaemon::ServicePause(bool bPause)
-{
-    m_bServicePause = bPause;
-}
-
-void MqttDaemon::ServiceStop()
-{
-    m_bServiceStop = true;
 }

@@ -98,10 +98,10 @@
 #include <fstream>
 #include <sstream>
 #include <exception>
-#include "SafeFunctions/SafeFunctions.h"
 
 #ifdef __linux__
-    #include <cerrno>
+	#include "SafeFunctions/SafeFunctions.h"
+	#include <cerrno>
     #include <sys/ioctl.h>
     #include <sys/socket.h>
     #include <arpa/inet.h>

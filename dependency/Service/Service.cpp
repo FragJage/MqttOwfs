@@ -1,15 +1,14 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
-#include <assert.h>
+#include <cassert>
 #include "Service.h"
-#include "SafeFunctions/SafeFunctions.h"
-
-#ifdef _MSC_VER
-#pragma warning( disable : 4996)
-#endif
 
 using namespace std;
+
+condition_variable ServiceConditionVariable::m_UniqueConditionVariable;
+mutex ServiceConditionVariable::m_UniqueMutex;
+int ServiceConditionVariable::m_LastId = -1;
 
 #ifdef WIN32
 void WINAPI ServiceMain(unsigned long argc, char* argv[])
@@ -27,7 +26,55 @@ void WINAPI ServiceCtrlHandler(unsigned long controlCode)
 	pService->ServiceCtrlHandler(controlCode);
 	return;
 }
+#else
+#include <signal.h>
+
+void service_signal_handler(int signal)
+{
+	switch (signal)
+	{
+	case SIGINT:
+	case SIGABRT:
+	case SIGQUIT:
+	case SIGKILL:
+	case SIGTERM:
+		Service::Get()->ChangeStatus(Service::StatusKind::STOP);
+		break;
+	case SIGCONT:
+		Service::Get()->ChangeStatus(Service::StatusKind::START);
+		break;
+	case SIGTSTP:
+		Service::Get()->ChangeStatus(Service::StatusKind::PAUSE);
+		break;
+	}
+}
 #endif
+
+/**************************************************************************************************************/
+/***                                                                                                        ***/
+/*** Class ServiceConditionVariable                                                                         ***/
+/***                                                                                                        ***/
+/**************************************************************************************************************/
+void ServiceConditionVariable::notify_one()
+{
+	lock_guard<mutex> lock(m_UniqueMutex); 
+	m_LastId = m_Id; 
+	m_UniqueConditionVariable.notify_one();
+};
+
+int ServiceConditionVariable::wait()
+{
+	unique_lock<mutex> lock(m_UniqueMutex);
+	m_UniqueConditionVariable.wait(lock);
+	return m_LastId;
+};
+
+int ServiceConditionVariable::wait_for(int timeout)
+{
+	unique_lock<mutex> lock(m_UniqueMutex);
+	if (m_UniqueConditionVariable.wait_for(lock, timeout * 1ms) == cv_status::timeout) m_LastId = Service::TIMEOUT;
+	return m_LastId;
+};
 
 /**************************************************************************************************************/
 /***                                                                                                        ***/
@@ -35,6 +82,8 @@ void WINAPI ServiceCtrlHandler(unsigned long controlCode)
 /***                                                                                                        ***/
 /**************************************************************************************************************/
 Service* Service::m_pInstance = nullptr;
+const int Service::STATUS_CHANGED = 0;
+const int Service::TIMEOUT = -1;
 
 Service* Service::Create(const string& name, const string& description, IService *service)
 {
@@ -54,14 +103,29 @@ void Service::Destroy()
 	m_pInstance = nullptr;
 }
 
-Service::Service(const string& name, const string& description, IService *service)
+Service::Service(const string& name, const string& description, IService *service) : m_Status(StatusKind::START)
 {
-    m_pName = new char[name.size()+1];
-    strcpy(m_pName, name.c_str());
-	m_pDescription = new char[description.size()+1];
+	size_t len;
+
+	len = name.size() + 1;
+    m_pName = new char[len];
+    #ifdef WIN32
+    strcpy_s(m_pName, len, name.c_str());
+    #else
+	strcpy(m_pName, name.c_str());
+    #endif
+
+	len = description.size() + 1;
+	m_pDescription = new char[len];
+    #ifdef WIN32
+	strcpy_s(m_pDescription, len, description.c_str());
+    #else
 	strcpy(m_pDescription, description.c_str());
+    #endif
+
 	m_iService = service;
 	m_pInstance = this;
+	m_StatusChanged.set_id(Service::STATUS_CHANGED);
 	return;
 }
 
@@ -72,6 +136,37 @@ Service::~Service()
 	m_pInstance = nullptr;
 }
 
+void Service::SetIds(vector<reference_wrapper<ServiceConditionVariable>> cvs)
+{
+	for (size_t i = 0; i<cvs.size(); i++)
+		cvs[i].get().set_id(i + 1);
+}
+
+int Service::Wait(vector<reference_wrapper<ServiceConditionVariable>> cvs)
+{
+	SetIds(cvs);
+	return ServiceConditionVariable::wait();
+}
+
+int Service::WaitFor(std::vector<std::reference_wrapper<ServiceConditionVariable>> cvs, int timeout)
+{
+	SetIds(cvs);
+	return ServiceConditionVariable::wait_for(timeout);
+}
+
+Service::StatusKind Service::GetStatus()
+{
+	lock_guard<mutex> lock(m_StatusAccess);
+	return m_Status;
+}
+
+void Service::ChangeStatus(StatusKind status)
+{
+	lock_guard<mutex> lock(m_StatusAccess);
+	m_Status = status;
+	m_StatusChanged.notify_one();
+}
+
 #ifdef WIN32
 int Service::Start(int argc, char* argv[])
 {
@@ -80,24 +175,24 @@ int Service::Start(int argc, char* argv[])
 
     if (argc >= 2 && (*argv[1] == '-' || *argv[1] == '/'))
     {
-        if(strcmp("Install", argv[1]+1) == 0) return CmdInstall();
-        if(strcmp("Remove", argv[1]+1) == 0) return CmdRemove();
-        if(strcmp("Console", argv[1]+1) == 0) return m_iService->ServiceStart(argc, argv);
-        if(strcmp("Service", argv[1]+1) == 0)
+        if(strcmp("install", argv[1]+1) == 0) return CmdInstall();
+        if(strcmp("remove", argv[1]+1) == 0) return CmdRemove();
+        if(strcmp("console", argv[1]+1) == 0) return m_iService->ServiceLoop(argc, argv);
+        if(strcmp("service", argv[1]+1) == 0)
         {
             dispatchTable[0].lpServiceName = m_pName;
             dispatchTable[0].lpServiceProc = ::ServiceMain;
             dispatchTable[1].lpServiceName = NULL;
             dispatchTable[1].lpServiceProc = NULL;
-			if(!StartServiceCtrlDispatcher(dispatchTable)) return m_iService->ServiceStart(argc, argv);
+			if(!StartServiceCtrlDispatcher(dispatchTable)) return m_iService->ServiceLoop(argc, argv);
 			return 0;
         }
     }
 
 	cout << endl << "Usage :" << endl;
-	cout << argv[0] << " /Install       To install the service" << endl;
-	cout << argv[0] << " /Remove        To remove the service" << endl;
-	cout << argv[0] << " /Console       To run as a console application" << endl;
+	cout << argv[0] << " /install       To install the service" << endl;
+	cout << argv[0] << " /remove        To remove the service" << endl;
+	cout << argv[0] << " /console       To run as a console application" << endl;
 	return -1;
 }
 
@@ -118,7 +213,7 @@ int Service::CmdInstall()
 
     //Create the service
 	GetModuleFileName(NULL, exePath, MAX_PATH+1);
-	strcat(exePath, " /Service");
+	strcat_s(exePath, MAX_PATH, " /Service");
 
 	hService = CreateService(
 				hSCManager,
@@ -208,14 +303,14 @@ void Service::ServiceCtrlHandler(unsigned long controlCode)
 		case SERVICE_CONTROL_PAUSE:
 		{
 			m_serviceStatus.dwCurrentState = SERVICE_PAUSED;
-			m_iService->ServicePause(true);
+			ChangeStatus(StatusKind::PAUSE);
 			break;
 		}
 
 		case SERVICE_CONTROL_CONTINUE:
 		{
 			m_serviceStatus.dwCurrentState = SERVICE_RUNNING;
-			m_iService->ServicePause(false);
+			ChangeStatus(StatusKind::START);
 			break;
 		}
 
@@ -226,7 +321,7 @@ void Service::ServiceCtrlHandler(unsigned long controlCode)
 			m_serviceStatus.dwCheckPoint = 0;
 			m_serviceStatus.dwWaitHint = 0;
 			SetServiceStatus(m_serviceStatusHandle, &m_serviceStatus);
-			m_iService->ServiceStop();
+			ChangeStatus(StatusKind::STOP);
 			break;
 		}
 
@@ -262,7 +357,7 @@ void Service::ServiceMain(int argc, char* argv[])
 	m_serviceStatus.dwWaitHint = 0;
 	if(!SetServiceStatus(m_serviceStatusHandle, &m_serviceStatus)) return;
 
-	m_iService->ServiceStart(argc, argv);
+	m_iService->ServiceLoop(argc, argv);
 
 	m_serviceStatus.dwWin32ExitCode = 0;
 	m_serviceStatus.dwCurrentState = SERVICE_STOPPED;
@@ -274,7 +369,6 @@ void Service::ServiceMain(int argc, char* argv[])
 }
 #else
 #include <unistd.h>
-#include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -355,9 +449,9 @@ int Service::Start(int argc, char* argv[])
         if(strcmp("start", argv[1]+1) == 0) return CmdStart(argc, argv);
         if(strcmp("stop", argv[1]+1) == 0) return CmdStop();
         if(strcmp("restart", argv[1]+1) == 0) return CmdRestart(argc, argv);
-        if(strcmp("console", argv[1]+1) == 0) return m_iService->ServiceStart(argc, argv);
+        if(strcmp("console", argv[1]+1) == 0) return m_iService->ServiceLoop(argc, argv);
     }
-    if (argc == 1) return m_iService->ServiceStart(argc, argv);
+    if (argc == 1) return m_iService->ServiceLoop(argc, argv);
 
 	cout << endl << "Usage :" << endl;
 	cout << argv[0] << " -start       To start the daemon" << endl;
@@ -386,7 +480,6 @@ int Service::CmdStart(int argc, char* argv[])
     if (setsid() < 0) throw Service::Exception(0x0262, "Service::CmdStart : Unable to set the session id");
 
     // Catch, ignore and handle signals
-    //TODO: Implement a working signal handler
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
 
@@ -403,6 +496,14 @@ int Service::CmdStart(int argc, char* argv[])
         return 0;
     }
 
+	signal(SIGINT, service_signal_handler);
+	signal(SIGQUIT, service_signal_handler);
+	signal(SIGABRT, service_signal_handler);
+	signal(SIGKILL, service_signal_handler);
+	signal(SIGTERM, service_signal_handler);
+	signal(SIGCONT, service_signal_handler);
+	signal(SIGTSTP, service_signal_handler);
+
     // Set new file permissions
     umask(0);
 
@@ -413,7 +514,7 @@ int Service::CmdStart(int argc, char* argv[])
     //for (int i = sysconf(_SC_OPEN_MAX); i>0; i--)
     //    close (i);
 
-    ret = m_iService->ServiceStart(argc, argv);
+    ret = m_iService->ServiceLoop(argc, argv);
     unlink(m_pidFile.c_str());
     return ret;
 }

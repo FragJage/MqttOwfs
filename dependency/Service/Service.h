@@ -4,28 +4,54 @@
 #ifdef WIN32
 #include <Windows.h>
 #include <Winsvc.h>
-#else
-#include <vector>
 #endif // WIN32
+#include <cstring>
 #include <string>
+#include <vector>
+#include <condition_variable>
+#include <mutex>
 
-using namespace std;
+
+class ServiceConditionVariable
+{
+public :
+	ServiceConditionVariable() : m_Id(-1) {};
+	~ServiceConditionVariable() {};
+	void set_id(int id) { m_Id = id; };
+	void notify_one();
+	static int wait();
+	static int wait_for(int timeout);
+private :
+	int m_Id;
+	static std::condition_variable m_UniqueConditionVariable;
+	static std::mutex m_UniqueMutex;
+	static int m_LastId;
+};
 
 class Service
 {
 public:
     class Exception;
 	class IService;
+	enum StatusKind { START, STOP, PAUSE };
 
-	static Service* Create(const string& name, const string& description, IService *service);
+	static Service* Create(const std::string& name, const std::string& description, IService *service);
 	static Service* Get();
 	static void Destroy();
+	static const int STATUS_CHANGED;
+	static const int TIMEOUT;
 
 	int Start(int argc, char* argv[]);
+	int Wait(std::vector<std::reference_wrapper<ServiceConditionVariable>> cvs);
+	int WaitFor(std::vector<std::reference_wrapper<ServiceConditionVariable>> cvs, int timeout);
+	StatusKind GetStatus();
+	void ChangeStatus(StatusKind status);
 
 private:
-    Service(const string& name, const string& description, IService *service);
+    Service(const std::string& name, const std::string& description, IService *service);
     virtual ~Service();
+	void SetIds(std::vector<std::reference_wrapper<ServiceConditionVariable>> cvs);
+
     #ifdef WIN32
         typedef BOOL(WINAPI *ChangeServiceConfigType)(SC_HANDLE, DWORD, LPCVOID);
 
@@ -51,22 +77,23 @@ private:
 
 
         static std::vector<std::string> m_runDirs;
-        string m_daemonName;
-        string m_pidFile;
+        std::string m_daemonName;
+        std::string m_pidFile;
 	#endif // WIN32
 
 	char*				m_pName;
 	char*				m_pDescription;
 	IService*           m_iService;
 	static Service*     m_pInstance;
+	StatusKind					m_Status;
+	std::mutex					m_StatusAccess;
+	ServiceConditionVariable	m_StatusChanged;
 };
 
 class Service::IService
 {
 	public:
-		virtual int ServiceStart(int argc, char* argv[]) = 0;
-		virtual void ServicePause(bool bPause) = 0;
-		virtual void ServiceStop() = 0;
+		virtual int ServiceLoop(int argc, char* argv[]) = 0;
 };
 
 class Service::Exception: public std::exception
