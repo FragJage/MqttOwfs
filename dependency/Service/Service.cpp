@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
+#include <chrono>
 #include "Service.h"
 
 using namespace std;
@@ -72,7 +73,7 @@ int ServiceConditionVariable::wait()
 int ServiceConditionVariable::wait_for(int timeout)
 {
 	unique_lock<mutex> lock(m_UniqueMutex);
-	if (m_UniqueConditionVariable.wait_for(lock, timeout * 1ms) == cv_status::timeout) m_LastId = Service::TIMEOUT;
+	if (m_UniqueConditionVariable.wait_for(lock, timeout * chrono::milliseconds(1)) == cv_status::timeout) m_LastId = Service::TIMEOUT;
 	return m_LastId;
 };
 
