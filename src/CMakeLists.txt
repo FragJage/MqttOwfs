@@ -82,8 +82,8 @@ add_executable(
   main.cpp
 )
 
-target_link_libraries(MqttCalcul paho-mqtt3a)
-target_link_libraries(MqttCalcul paho-mqttpp3)
+target_link_libraries(MqttOwfs paho-mqtt3a)
+target_link_libraries(MqttOwfs paho-mqttpp3)
 
 #Spécification WIN32
 if(WIN32)
