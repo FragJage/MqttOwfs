@@ -46,7 +46,8 @@
 		</Compiler>
 		<Linker>
 			<Add option="-m32" />
-			<Add library="mosquittopp" />
+			<Add library="paho-mqtt3a" />
+			<Add library="paho-mqttpp3" />
 			<Add directory="/usr/lib/x86_64-linux-gnu" />
 		</Linker>
 		<Unit filename="../../dependency/MqttBase/MqttBase.cpp" />
@@ -76,8 +77,8 @@
 		<Unit filename="../../dependency/SimpleSock/SimpleSockUDP.h" />
 		<Unit filename="../../dependency/StringTools/StringTools.cpp" />
 		<Unit filename="../../dependency/StringTools/StringTools.h" />
-		<Unit filename="../../dependency/owfscpp/owfscpp.cpp" />
-		<Unit filename="../../dependency/owfscpp/owfscpp.h" />
+		<Unit filename="../../dependency/owfscpp/src/owfscpp.cpp" />
+		<Unit filename="../../dependency/owfscpp/src/owfscpp.h" />
 		<Unit filename="../../src/MqttOwfs.cpp" />
 		<Unit filename="../../src/MqttOwfs.h" />
 		<Unit filename="../../src/main.cpp" />

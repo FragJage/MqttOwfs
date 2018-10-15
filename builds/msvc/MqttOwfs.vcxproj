@@ -162,7 +162,7 @@
     <ClCompile Include="..\..\dependency\MqttBase\MqttBase.cpp" />
     <ClCompile Include="..\..\dependency\MqttBase\MqttClient.cpp" />
     <ClCompile Include="..\..\dependency\MqttBase\MqttDaemon.cpp" />
-    <ClCompile Include="..\..\dependency\owfscpp\owfscpp.cpp" />
+    <ClCompile Include="..\..\dependency\owfscpp\src\owfscpp.cpp" />
     <ClCompile Include="..\..\dependency\Plateforms\Plateforms.cpp" />
     <ClCompile Include="..\..\dependency\Service\Service.cpp" />
     <ClCompile Include="..\..\dependency\SimpleFolders\SimpleFolders.cpp" />
@@ -178,7 +178,7 @@
     <ClInclude Include="..\..\dependency\MqttBase\MqttBase.h" />
     <ClInclude Include="..\..\dependency\MqttBase\MqttClient.h" />
     <ClInclude Include="..\..\dependency\MqttBase\MqttDaemon.h" />
-    <ClInclude Include="..\..\dependency\owfscpp\owfscpp.h" />
+    <ClInclude Include="..\..\dependency\owfscpp\src\owfscpp.h" />
     <ClInclude Include="..\..\dependency\Plateforms\Plateforms.h" />
     <ClInclude Include="..\..\dependency\Service\Service.h" />
     <ClInclude Include="..\..\dependency\SimpleFolders\SimpleFolders.h" />

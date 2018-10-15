@@ -6,7 +6,7 @@
 #include <map>
 #include "MqttBase/MqttDaemon.h"
 #include "owDevice.h"
-#include "owfscpp/owfscpp.h"
+#include "owfscpp/src/owfscpp.h"
 
 struct MqttQueue
 {

@@ -1,0 +1,3 @@
+[submodule "dependency/owfscpp"]
+	path = dependency/owfscpp
+	url = https://github.com/FragJage/owfscpp

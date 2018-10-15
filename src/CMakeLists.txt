@@ -19,7 +19,7 @@ file(
 file(
   GLOB_RECURSE
   Owfs_files
-  ../dependency/owfscpp/*
+  ../dependency/owfscpp/src/owfscpp.*
 )
 
 file(
