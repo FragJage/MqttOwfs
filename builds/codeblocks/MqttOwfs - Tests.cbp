@@ -28,7 +28,6 @@
 				<Option compiler="gcc" />
 				<Option parameters="/Console" />
 				<Compiler>
-					<Add option="-O2" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
@@ -45,10 +44,14 @@
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
-			<Add library="mosquittopp" />
 			<Add library="pthread" />
+			<Add library="libpaho-mqtt3c" />
+			<Add library="libpaho-mqttpp3" />
 			<Add directory="/usr/lib/x86_64-linux-gnu" />
+			<Add directory="/usr/local/lib" />
 		</Linker>
+		<Unit filename="../../dependency/MqttBase/MqttBase.cpp" />
+		<Unit filename="../../dependency/MqttBase/MqttBase.h" />
 		<Unit filename="../../dependency/MqttBase/MqttClient.cpp" />
 		<Unit filename="../../dependency/MqttBase/MqttClient.h" />
 		<Unit filename="../../dependency/MqttBase/MqttDaemon.cpp" />

@@ -49,6 +49,8 @@
 			<Add library="mosquittopp" />
 			<Add directory="/usr/lib/x86_64-linux-gnu" />
 		</Linker>
+		<Unit filename="../../dependency/MqttBase/MqttBase.cpp" />
+		<Unit filename="../../dependency/MqttBase/MqttBase.h" />
 		<Unit filename="../../dependency/MqttBase/MqttClient.cpp" />
 		<Unit filename="../../dependency/MqttBase/MqttClient.h" />
 		<Unit filename="../../dependency/MqttBase/MqttDaemon.cpp" />
