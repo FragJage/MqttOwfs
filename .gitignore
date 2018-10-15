@@ -11,3 +11,6 @@ bin
 *.cmd
 Debug
 Release
+Makefile
+cmake_install.cmake
+*CMakeFiles*
