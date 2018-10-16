@@ -298,6 +298,7 @@ bool MqttOwfs::RefreshValue(const string& name, owDevice& device)
     device.SetValue(value);
 	lock_guard<mutex> lock(m_MqttQueueAccess);
 	m_MqttQueue.emplace(device.GetDisplayName(), value);
+	LOG_VERBOSE(m_Log) << "New value for " << name << " : " << value;
 
 	return true;
 }
@@ -471,6 +472,7 @@ void MqttOwfs::SendMqttMessages()
 	while (!m_MqttQueue.empty())
 	{
 		MqttQueue& mqttQueue = m_MqttQueue.front();
+		LOG_VERBOSE(m_Log) << "Send " << mqttQueue.Topic << " : " << mqttQueue.Message;
 		Publish(mqttQueue.Topic, mqttQueue.Message);
 		m_MqttQueue.pop();
 	}
