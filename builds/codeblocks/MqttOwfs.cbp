@@ -11,7 +11,7 @@
 				<Option object_output="obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/Debug" />
+				<Option parameters="-console" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
@@ -27,7 +27,7 @@
 				<Option object_output="obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/Console" />
+				<Option parameters="-console" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
