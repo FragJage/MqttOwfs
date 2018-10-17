@@ -223,11 +223,10 @@ void MqttOwfs::OwDeviceAdd(const string& displayName, const string& configName, 
 
     value = OwGetValue(configName, round);
 
-    LOG_VERBOSE(m_Log) << "Device created " << displayName <<" : "<< configName <<" = "<< value;
-    m_OwDevices[configName] = owDevice(displayName, configName, round, value);
+    LOG_VERBOSE(m_Log) << "Device created " << displayName <<" : "<< configName << " (round " << round << ") = "<< value;
+    m_OwDevices.emplace(piecewise_construct, forward_as_tuple(configName), forward_as_tuple(displayName, configName, round, value));
 	lock_guard<mutex> lock(m_MqttQueueAccess);
 	m_MqttQueue.emplace(displayName, value);
-
 }
 
 void MqttOwfs::OwDeviceAdd(const string& name)
@@ -295,6 +294,7 @@ bool MqttOwfs::RefreshValue(const string& name, owDevice& device)
 
     value = OwGetValue(name, device.GetRound());
     if(value==device.GetValue()) return false;
+
     device.SetValue(value);
 	lock_guard<mutex> lock(m_MqttQueueAccess);
 	m_MqttQueue.emplace(device.GetDisplayName(), value);
@@ -458,7 +458,7 @@ int MqttOwfs::DaemonLoop(int argc, char* argv[])
 		if (!bPause)
 		{
 			Refresh();
-			if (cond == 1) SendMqttMessages();
+			SendMqttMessages();
 		}
 	}
 
