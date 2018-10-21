@@ -4,9 +4,9 @@
 #include <mutex>
 #include <queue>
 #include <map>
-#include "MqttBase/MqttDaemon.h"
+#include "MqttDaemon.h"
 #include "owDevice.h"
-#include "owfscpp/src/owfscpp.h"
+#include "owfscpp.h"
 
 struct MqttQueue
 {
