@@ -1,16 +1,38 @@
-obj
-bin
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
 *.out
-*.layout
+*.app
+bin
+
+# Codeblocks
 *.depend
-*.dir
-.vs
-*.VC.*
-*.filter
-*.user
-*.cmd
-Debug
-Release
+*.layout
+
+# CMake
+CMakeCache.txt
+CMakeFiles
 Makefile
 cmake_install.cmake
-*CMakeFiles*
+install_manifest.txt

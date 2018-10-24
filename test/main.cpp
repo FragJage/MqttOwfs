@@ -2,7 +2,7 @@
 #ifdef WIN32
 #include <WinSock2.h>		// To stop windows.h including winsock.h
 #endif
-#include "UnitTest/UnitTest.h"
+#include "UnitTest.h"
 #include "TestowDevice.h"
 #include "TestMqttOwfs.h"
 

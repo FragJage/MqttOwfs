@@ -15,11 +15,9 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
-					<Add option="-m64" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-m64" />
 				</Linker>
 			</Target>
 			<Target title="Debug">
@@ -39,46 +37,51 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
-			<Add option="-m32" />
+			<Add option="-m64" />
 			<Add option="-fexceptions" />
-			<Add directory="../../dependency" />
 			<Add directory="../../src" />
+			<Add directory="../../dependencies/FragFramework/src" />
+			<Add directory="../../dependencies/MqttDaemon/src" />
+			<Add directory="../../dependencies/owfscpp/src" />
+			<Add directory="../../dependencies/ServiceSkeleton/src" />
+			<Add directory="../../dependencies/SimpleFolder/src" />
+			<Add directory="../../dependencies/SimpleIni/include" />
+			<Add directory="../../dependencies/SimpleLog/src" />
+			<Add directory="../../dependencies/SimpleSock/src" />
 		</Compiler>
 		<Linker>
-			<Add option="-m32" />
+			<Add option="-m64" />
 			<Add library="paho-mqtt3a" />
 			<Add library="paho-mqttpp3" />
 			<Add directory="/usr/lib/x86_64-linux-gnu" />
 		</Linker>
-		<Unit filename="../../dependency/MqttBase/MqttBase.cpp" />
-		<Unit filename="../../dependency/MqttBase/MqttBase.h" />
-		<Unit filename="../../dependency/MqttBase/MqttClient.cpp" />
-		<Unit filename="../../dependency/MqttBase/MqttClient.h" />
-		<Unit filename="../../dependency/MqttBase/MqttDaemon.cpp" />
-		<Unit filename="../../dependency/MqttBase/MqttDaemon.h" />
-		<Unit filename="../../dependency/Plateforms/Plateforms.cpp" />
-		<Unit filename="../../dependency/Plateforms/Plateforms.h" />
-		<Unit filename="../../dependency/SafeFunctions/SafeFunctions.cpp" />
-		<Unit filename="../../dependency/SafeFunctions/SafeFunctions.h" />
-		<Unit filename="../../dependency/Service/Service.cpp" />
-		<Unit filename="../../dependency/Service/Service.h" />
-		<Unit filename="../../dependency/SimpleFolders/SimpleFolders.cpp" />
-		<Unit filename="../../dependency/SimpleFolders/SimpleFolders.h" />
-		<Unit filename="../../dependency/SimpleIni/SimpleIni.cpp" />
-		<Unit filename="../../dependency/SimpleIni/SimpleIni.h" />
-		<Unit filename="../../dependency/SimpleLog/SimpleLog.cpp" />
-		<Unit filename="../../dependency/SimpleLog/SimpleLog.h" />
-		<Unit filename="../../dependency/SimpleLog/SimpleLog.inl" />
-		<Unit filename="../../dependency/SimpleSock/SimpleSock.cpp" />
-		<Unit filename="../../dependency/SimpleSock/SimpleSock.h" />
-		<Unit filename="../../dependency/SimpleSock/SimpleSockTCP.cpp" />
-		<Unit filename="../../dependency/SimpleSock/SimpleSockTCP.h" />
-		<Unit filename="../../dependency/SimpleSock/SimpleSockUDP.cpp" />
-		<Unit filename="../../dependency/SimpleSock/SimpleSockUDP.h" />
-		<Unit filename="../../dependency/StringTools/StringTools.cpp" />
-		<Unit filename="../../dependency/StringTools/StringTools.h" />
-		<Unit filename="../../dependency/owfscpp/src/owfscpp.cpp" />
-		<Unit filename="../../dependency/owfscpp/src/owfscpp.h" />
+		<Unit filename="../../dependencies/FragFramework/src/Plateforms.cpp" />
+		<Unit filename="../../dependencies/FragFramework/src/Plateforms.h" />
+		<Unit filename="../../dependencies/FragFramework/src/SafeFunctions.cpp" />
+		<Unit filename="../../dependencies/FragFramework/src/SafeFunctions.h" />
+		<Unit filename="../../dependencies/FragFramework/src/StringTools.cpp" />
+		<Unit filename="../../dependencies/FragFramework/src/StringTools.h" />
+		<Unit filename="../../dependencies/MqttDaemon/src/MqttBase.cpp" />
+		<Unit filename="../../dependencies/MqttDaemon/src/MqttBase.h" />
+		<Unit filename="../../dependencies/MqttDaemon/src/MqttClient.cpp" />
+		<Unit filename="../../dependencies/MqttDaemon/src/MqttClient.h" />
+		<Unit filename="../../dependencies/MqttDaemon/src/MqttDaemon.cpp" />
+		<Unit filename="../../dependencies/MqttDaemon/src/MqttDaemon.h" />
+		<Unit filename="../../dependencies/ServiceSkeleton/src/Service.cpp" />
+		<Unit filename="../../dependencies/ServiceSkeleton/src/Service.h" />
+		<Unit filename="../../dependencies/SimpleFolder/src/SimpleFolders.cpp" />
+		<Unit filename="../../dependencies/SimpleFolder/src/SimpleFolders.h" />
+		<Unit filename="../../dependencies/SimpleIni/include/SimpleIni.h" />
+		<Unit filename="../../dependencies/SimpleIni/src/SimpleIni.cpp" />
+		<Unit filename="../../dependencies/SimpleLog/src/SimpleLog.cpp" />
+		<Unit filename="../../dependencies/SimpleLog/src/SimpleLog.h" />
+		<Unit filename="../../dependencies/SimpleLog/src/SimpleLog.inl" />
+		<Unit filename="../../dependencies/SimpleSock/src/SimpleSock.cpp" />
+		<Unit filename="../../dependencies/SimpleSock/src/SimpleSock.h" />
+		<Unit filename="../../dependencies/SimpleSock/src/SimpleSockTCP.cpp" />
+		<Unit filename="../../dependencies/SimpleSock/src/SimpleSockTCP.h" />
+		<Unit filename="../../dependencies/owfscpp/src/owfscpp.cpp" />
+		<Unit filename="../../dependencies/owfscpp/src/owfscpp.h" />
 		<Unit filename="../../src/MqttOwfs.cpp" />
 		<Unit filename="../../src/MqttOwfs.h" />
 		<Unit filename="../../src/main.cpp" />

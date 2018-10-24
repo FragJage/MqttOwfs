@@ -1,5 +1,5 @@
 #include <cassert>
-#include "UnitTest/UnitTest.h"
+#include "UnitTest.h"
 #include "../src/owDevice.h"
 
 using namespace std;

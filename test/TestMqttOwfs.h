@@ -4,9 +4,9 @@
 #ifdef WIN32
 #include <WinSock2.h>		// To stop windows.h including winsock.h
 #endif
-#include "Plateforms/Plateforms.h"
-#include "UnitTest/UnitTest.h"
-#include "MqttBase/MqttClient.h"
+#include "Plateforms.h"
+#include "UnitTest.h"
+#include "MqttClient.h"
 #include "../src/MqttOwfs.h"
 
 
