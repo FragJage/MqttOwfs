@@ -11,7 +11,7 @@
 using namespace std;
 
 
-MqttOwfs::MqttOwfs() : MqttDaemon("owfs", ".MqttOwfs"), m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_OwfsClient()
+MqttOwfs::MqttOwfs() : MqttDaemon("owfs", "MqttOwfs"), m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_OwfsClient()
 {
 	m_OwfsClient.Initialisation("127.0.0.1", 4304);
 }
