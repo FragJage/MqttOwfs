@@ -21,6 +21,7 @@ set(
   FragFramework_files
   "../dependencies/FragFramework/src/Plateforms.cpp"
   "../dependencies/FragFramework/src/SafeFunctions.cpp"
+  "../dependencies/FragFramework/src/StringTools.cpp"
 )
 
 file(
