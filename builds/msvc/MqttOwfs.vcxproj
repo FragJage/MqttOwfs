@@ -87,10 +87,10 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NOMINMAX;WIN32;_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;NOMINMAX;WIN32;_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>Lib\paho.mqtt.c\include;Lib\paho.mqtt.cpp\include;..\..\dependency;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Lib\paho.mqtt.c\include;Lib\paho.mqtt.cpp\include;..\..\dependencies\ServiceSkeleton\src;..\..\dependencies\SimpleFolder\src;..\..\dependencies\SimpleLog\src;..\..\dependencies\SimpleIni\include;..\..\dependencies\FragFramework\src;..\..\dependencies\MqttDaemon\src;..\..\dependencies\owfscpp\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,10 +123,10 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;NOMINMAX;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>Lib\paho.mqtt.c\include;Lib\paho.mqtt.cpp\include;..\..\dependency;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Lib\paho.mqtt.c\include;Lib\paho.mqtt.cpp\include;..\..\dependencies\ServiceSkeleton\src;..\..\dependencies\SimpleFolder\src;..\..\dependencies\SimpleLog\src;..\..\dependencies\SimpleIni\include;..\..\dependencies\FragFramework\src;..\..\dependencies\MqttDaemon\src;..\..\dependencies\owfscpp\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,38 +159,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\dependency\MqttBase\MqttBase.cpp" />
-    <ClCompile Include="..\..\dependency\MqttBase\MqttClient.cpp" />
-    <ClCompile Include="..\..\dependency\MqttBase\MqttDaemon.cpp" />
-    <ClCompile Include="..\..\dependency\owfscpp\src\owfscpp.cpp" />
-    <ClCompile Include="..\..\dependency\Plateforms\Plateforms.cpp" />
-    <ClCompile Include="..\..\dependency\Service\Service.cpp" />
-    <ClCompile Include="..\..\dependency\SimpleFolders\SimpleFolders.cpp" />
-    <ClCompile Include="..\..\dependency\SimpleIni\SimpleIni.cpp" />
-    <ClCompile Include="..\..\dependency\SimpleLog\SimpleLog.cpp" />
-    <ClCompile Include="..\..\dependency\SimpleSock\SimpleSock.cpp" />
-    <ClCompile Include="..\..\dependency\SimpleSock\SimpleSockTCP.cpp" />
+    <ClCompile Include="..\..\dependencies\FragFramework\src\StringTools.cpp" />
+    <ClCompile Include="..\..\dependencies\MqttDaemon\src\MqttBase.cpp" />
+    <ClCompile Include="..\..\dependencies\MqttDaemon\src\MqttClient.cpp" />
+    <ClCompile Include="..\..\dependencies\MqttDaemon\src\MqttDaemon.cpp" />
+    <ClCompile Include="..\..\dependencies\owfscpp\src\owfscpp.cpp" />
+    <ClCompile Include="..\..\dependencies\FragFramework\src\Plateforms.cpp" />
+    <ClCompile Include="..\..\dependencies\ServiceSkeleton\src\Service.cpp" />
+    <ClCompile Include="..\..\dependencies\SimpleFolder\src\SimpleFolders.cpp" />
+    <ClCompile Include="..\..\dependencies\SimpleIni\src\SimpleIni.cpp" />
+    <ClCompile Include="..\..\dependencies\SimpleLog\src\SimpleLog.cpp" />
+    <ClCompile Include="..\..\dependencies\SimpleSock\src\SimpleSock.cpp" />
+    <ClCompile Include="..\..\dependencies\SimpleSock\src\SimpleSockTCP.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\MqttOwfs.cpp" />
     <ClCompile Include="..\..\src\owDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\dependency\MqttBase\MqttBase.h" />
-    <ClInclude Include="..\..\dependency\MqttBase\MqttClient.h" />
-    <ClInclude Include="..\..\dependency\MqttBase\MqttDaemon.h" />
-    <ClInclude Include="..\..\dependency\owfscpp\src\owfscpp.h" />
-    <ClInclude Include="..\..\dependency\Plateforms\Plateforms.h" />
-    <ClInclude Include="..\..\dependency\Service\Service.h" />
-    <ClInclude Include="..\..\dependency\SimpleFolders\SimpleFolders.h" />
-    <ClInclude Include="..\..\dependency\SimpleIni\SimpleIni.h" />
-    <ClInclude Include="..\..\dependency\SimpleLog\SimpleLog.h" />
-    <ClInclude Include="..\..\dependency\SimpleSock\SimpleSock.h" />
-    <ClInclude Include="..\..\dependency\SimpleSock\SimpleSockTCP.h" />
+    <ClInclude Include="..\..\dependencies\FragFramework\src\StringTools.h" />
+    <ClInclude Include="..\..\dependencies\MqttDaemon\src\MqttBase.h" />
+    <ClInclude Include="..\..\dependencies\MqttDaemon\src\MqttClient.h" />
+    <ClInclude Include="..\..\dependencies\MqttDaemon\src\MqttDaemon.h" />
+    <ClInclude Include="..\..\dependencies\owfscpp\src\owfscpp.h" />
+    <ClInclude Include="..\..\dependencies\FragFramework\src\Plateforms.h" />
+    <ClInclude Include="..\..\dependencies\ServiceSkeleton\src\Service.h" />
+    <ClInclude Include="..\..\dependencies\SimpleFolder\src\SimpleFolders.h" />
+    <ClInclude Include="..\..\dependencies\SimpleIni\include\SimpleIni.h" />
+    <ClInclude Include="..\..\dependencies\SimpleLog\src\SimpleLog.h" />
+    <ClInclude Include="..\..\dependencies\SimpleSock\src\SimpleSock.h" />
+    <ClInclude Include="..\..\dependencies\SimpleSock\src\SimpleSockTCP.h" />
     <ClInclude Include="..\..\src\MqttOwfs.h" />
     <ClInclude Include="..\..\src\owDevice.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\dependency\SimpleLog\SimpleLog.inl" />
+    <None Include="..\..\dependencies\SimpleLog\src\SimpleLog.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
