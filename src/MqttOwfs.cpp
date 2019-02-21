@@ -11,7 +11,7 @@
 using namespace std;
 
 
-MqttOwfs::MqttOwfs() : MqttDaemon("owfs", "MqttOwfs"), m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_OwfsClient()
+MqttOwfs::MqttOwfs() : MqttDaemon("owfs", "MqttOwfs"), m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_OwfsClient(), m_DefaultUncachedRead(false)
 {
 	m_OwfsClient.Initialisation("127.0.0.1", 4304);
 }
@@ -105,8 +105,8 @@ void MqttOwfs::DaemonConfigure(SimpleIni& iniFile)
 	std::transform(svalue.begin(), svalue.end(), svalue.begin(), ::toupper);
 	if ((svalue == "1") || (svalue == "TRUE") || (svalue == "YES"))
 	{
-		m_OwfsClient.SetOwserverFlag(owfscpp::Uncached, true);
-		LOG_VERBOSE(m_Log) << "Set Uncached read";
+		m_DefaultUncachedRead = true;
+		LOG_VERBOSE(m_Log) << "Set Uncached read by default";
 	}
 
 	m_OwDevices.clear();
@@ -115,8 +115,10 @@ void MqttOwfs::DaemonConfigure(SimpleIni& iniFile)
 
 void MqttOwfs::DevicesConfigure(SimpleIni& iniFile)
 {
+	string svalue;
 	string configName;
 	string displayName;
+	bool uncachedRead;
 	size_t pos;
 	int round;
 
@@ -141,9 +143,23 @@ void MqttOwfs::DevicesConfigure(SimpleIni& iniFile)
 			continue;
 		}
 
+		uncachedRead = m_DefaultUncachedRead;
+		svalue = iniFile.GetValue("owfs", "uncachedread", "");
+		if (svalue != "")
+		{
+			std::transform(svalue.begin(), svalue.end(), svalue.begin(), ::toupper);
+			if ((svalue == "1") || (svalue == "TRUE") || (svalue == "YES"))
+				uncachedRead = true;
+			else if ((svalue == "0") || (svalue == "FALSE") || (svalue == "NO"))
+				uncachedRead = false;
+			else
+				LOG_WARNING(m_Log) << "Device " << configName << " have an understanding uncachedread value.";
+		}
+
+
 		round = iniFile.GetValue(configName, "round", -1);
 
-		OwDeviceAdd(displayName, configName, round);
+		OwDeviceAdd(displayName, configName, round, uncachedRead);
 	}
 }
 
@@ -192,7 +208,7 @@ bool MqttOwfs::OwDeviceExist(const string& device)
     return false;
 }
 
-string MqttOwfs::OwGetValue(const string& configName, int round)
+string MqttOwfs::OwGetValue(const string& configName, int round, bool uncachedRead)
 {
     string svalue;
     double dvalue;
@@ -201,6 +217,7 @@ string MqttOwfs::OwGetValue(const string& configName, int round)
 
     try
     {
+		m_OwfsClient.SetOwserverFlag(owfscpp::Uncached, uncachedRead);
         svalue = m_OwfsClient.Get(configName);
     }
     catch (const exception& e)
@@ -216,15 +233,15 @@ string MqttOwfs::OwGetValue(const string& configName, int round)
     return s.str();
 }
 
-void MqttOwfs::OwDeviceAdd(const string& displayName, const string& configName, int round)
+void MqttOwfs::OwDeviceAdd(const string& displayName, const string& configName, int round, bool uncachedread)
 {
     string value;
 
 
-    value = OwGetValue(configName, round);
+    value = OwGetValue(configName, round, uncachedread);
 
     LOG_VERBOSE(m_Log) << "Device created " << displayName <<" : "<< configName << " (round " << round << ") = "<< value;
-    m_OwDevices.emplace(piecewise_construct, forward_as_tuple(configName), forward_as_tuple(displayName, configName, round, value));
+    m_OwDevices.emplace(piecewise_construct, forward_as_tuple(configName), forward_as_tuple(displayName, configName, round, uncachedread, value));
 	lock_guard<mutex> lock(m_MqttQueueAccess);
 	m_MqttQueue.emplace(displayName, value);
 }
@@ -251,37 +268,37 @@ void MqttOwfs::OwDeviceAdd(const string& name)
     switch(family)
     {
 		case 0x05 : 	//DS2405
-		    OwDeviceAdd(name, name+"/PIO", -1);
+		    OwDeviceAdd(name, name+"/PIO", -1, m_DefaultUncachedRead);
 			break;
 		case 0x10 :		//DS18S20, DS1920
-		    OwDeviceAdd(name, name+"/temperature9", 1);
+		    OwDeviceAdd(name, name+"/temperature9", 1, m_DefaultUncachedRead);
 			break;
 		case 0x12 :		//DS2406/07
-		    OwDeviceAdd(name, name+"/PIO.A", -1);
+		    OwDeviceAdd(name, name+"/PIO.A", -1, m_DefaultUncachedRead);
 			break;
 		case 0x1D :		//DS2423
-		    OwDeviceAdd(name, name+"/counters.A", -1);
+		    OwDeviceAdd(name, name+"/counters.A", -1, m_DefaultUncachedRead);
 			break;
 		case 0x20 : 	//DS2450
-		    OwDeviceAdd(name, name+"/PIO.A", -1);
+		    OwDeviceAdd(name, name+"/PIO.A", -1, m_DefaultUncachedRead);
 			break;
 		case 0x21 :		//DS1921
-		    OwDeviceAdd(name, name+"/temperature9", 1);
+		    OwDeviceAdd(name, name+"/temperature9", 1, m_DefaultUncachedRead);
 			break;
 		case 0x22 :		//DS1822
-		    OwDeviceAdd(name, name+"/temperature9", 1);
+		    OwDeviceAdd(name, name+"/temperature9", 1, m_DefaultUncachedRead);
 			break;
 		case 0x26 :		//DS2438
-		    OwDeviceAdd(name, name+"/VDD", 1);
+		    OwDeviceAdd(name, name+"/VDD", 1, m_DefaultUncachedRead);
 			break;
 		case 0x28 : 	//DS18B20
-		    OwDeviceAdd(name, name+"/temperature9", 1);
+		    OwDeviceAdd(name, name+"/temperature9", 1, m_DefaultUncachedRead);
 			break;
 		case 0x29 : 	//DS2408
-		    OwDeviceAdd(name, name+"/PIO.BYTE", -1);
+		    OwDeviceAdd(name, name+"/PIO.BYTE", -1, m_DefaultUncachedRead);
 			break;
 		case 0x3A : 	//DS2413
-		    OwDeviceAdd(name, name+"/PIO.A", -1);
+		    OwDeviceAdd(name, name+"/PIO.A", -1, m_DefaultUncachedRead);
 			break;
     }
 
@@ -292,7 +309,7 @@ bool MqttOwfs::RefreshValue(const string& name, owDevice& device)
 {
     string value;
 
-    value = OwGetValue(name, device.GetRound());
+    value = OwGetValue(name, device.GetRound(), device.GetUncachedRead());
     if(value==device.GetValue()) return false;
 
     device.SetValue(value);
@@ -359,7 +376,6 @@ void MqttOwfs::MessageForService(const string& msg)
 	{
 		LOG_WARNING(m_Log) << "Unknown command for service " << msg;
 	}
-	return;
 }
 
 void MqttOwfs::MessageForDevice(const string& device, const string& msg)
@@ -397,8 +413,6 @@ void MqttOwfs::MessageForDevice(const string& device, const string& msg)
 
 	if(RefreshValue(it->first, it->second))
 		m_MqttQueueCond.notify_one();
-
-	return;
 }
 
 void MqttOwfs::on_message(const string& topic, const string& message)

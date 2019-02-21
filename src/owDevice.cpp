@@ -6,11 +6,11 @@ owDevice::owDevice() : m_DisplayName(), m_DeviceName(), m_Round(-1), m_Current()
 {
 }
 
-owDevice::owDevice(const string& displayName, const string& deviceName, int round) : m_DisplayName(displayName), m_DeviceName(deviceName), m_Round(round), m_Current()
+owDevice::owDevice(const string& displayName, const string& deviceName, int round, bool uncachedRead) : m_DisplayName(displayName), m_DeviceName(deviceName), m_Round(round), m_UncachedRead(uncachedRead), m_Current()
 {
 }
 
-owDevice::owDevice(const string& displayName, const string& deviceName, int round, const string& current) : m_DisplayName(displayName), m_DeviceName(deviceName), m_Round(round), m_Current(current)
+owDevice::owDevice(const string& displayName, const string& deviceName, int round, bool uncachedRead, const string& current) : m_DisplayName(displayName), m_DeviceName(deviceName), m_Round(round), m_UncachedRead(uncachedRead), m_Current(current)
 {
 }
 
@@ -23,6 +23,7 @@ void owDevice::swap(owDevice& other)
     std::swap(m_DisplayName, other.m_DisplayName);
     std::swap(m_DeviceName, other.m_DeviceName);
     m_Round = other.m_Round;
+	m_UncachedRead = other.m_UncachedRead;
     std::swap(m_Current, other.m_Current);
 }
 
@@ -30,6 +31,7 @@ owDevice::owDevice(owDevice const& other):
     m_DisplayName{other.m_DisplayName},
     m_DeviceName{other.m_DeviceName},
     m_Round{other.m_Round},
+	m_UncachedRead{other.m_UncachedRead},
     m_Current{other.m_Current}
 {
 
@@ -46,6 +48,7 @@ owDevice::owDevice(owDevice &&other)
     m_DisplayName = move(other.m_DisplayName);
     m_DeviceName = move(other.m_DeviceName);
     m_Round = other.m_Round;
+	m_UncachedRead = other.m_UncachedRead;
     m_Current = move(other.m_Current);
 }
 
@@ -63,6 +66,11 @@ string owDevice::GetDisplayName()
 int owDevice::GetRound()
 {
     return m_Round;
+}
+
+bool owDevice::GetUncachedRead()
+{
+	return m_UncachedRead;
 }
 
 string owDevice::GetValue()

@@ -38,14 +38,15 @@ class MqttOwfs : public MqttDaemon
 		void RefreshDevices();
 
 		bool OwDeviceExist(const std::string& device);
-		void OwDeviceAdd(const std::string& displayName, const std::string& configName, int round);
+		void OwDeviceAdd(const std::string& displayName, const std::string& configName, int round, bool uncachedread);
 		void OwDeviceAdd(const std::string& displayName);
-		std::string OwGetValue(const std::string& configName, int round);
+		std::string OwGetValue(const std::string& configName, int round, bool uncachedRead);
 
 		std::map<std::string, owDevice> m_OwDevices;
 		int m_RefreshDevicesInterval;
 		int m_RefreshValuesInterval;
 		owfscpp m_OwfsClient;
+		bool m_DefaultUncachedRead;
 
 		std::mutex m_MqttQueueAccess;
 		ServiceConditionVariable m_MqttQueueCond;

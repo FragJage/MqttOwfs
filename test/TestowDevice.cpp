@@ -40,7 +40,7 @@ bool TestowDevice::TestCopyConstructor()
 
 bool TestowDevice::TestDisplayName()
 {
-    owDevice myOw("MyDisplayName", "", 0);
+    owDevice myOw("MyDisplayName", "", 0, false);
 	string displayName = myOw.GetDisplayName();
     assert("MyDisplayName"== displayName);
 
@@ -49,7 +49,7 @@ bool TestowDevice::TestDisplayName()
 
 bool TestowDevice::TestRound()
 {
-    owDevice myOw("MyDisplayName", "", 2);
+    owDevice myOw("MyDisplayName", "", 2, true);
 	int round = myOw.GetRound();
     assert(2== round);
     return true;

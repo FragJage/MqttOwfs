@@ -7,8 +7,8 @@ class owDevice
 {
     public:
         owDevice();
-        owDevice(const std::string& displayName, const std::string& deviceName, int round);
-        owDevice(const std::string& displayName, const std::string& deviceName, int round, const std::string& current);
+        owDevice(const std::string& displayName, const std::string& deviceName, int round, bool uncachedRead);
+        owDevice(const std::string& displayName, const std::string& deviceName, int round, bool uncachedRead, const std::string& current);
         ~owDevice();
 
         void swap(owDevice& other);
@@ -19,6 +19,7 @@ class owDevice
 
         std::string GetDisplayName();
         int GetRound();
+		bool GetUncachedRead();
         std::string GetValue();
         void SetValue(const std::string& current);
 
@@ -26,6 +27,7 @@ class owDevice
         std::string m_DisplayName;
         std::string m_DeviceName;
         int m_Round;
+		bool m_UncachedRead;
         std::string m_Current;
 };
 
