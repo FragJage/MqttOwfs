@@ -8,6 +8,7 @@ TestowDevice::TestowDevice() : TestClass("owDevice", this)
 	addTest("DisplayName", &TestowDevice::TestDisplayName);
 	addTest("Round", &TestowDevice::TestRound);
 	addTest("Value", &TestowDevice::TestValue);
+	addTest("CachedBool", &TestowDevice::TestCachedBool);
 }
 
 TestowDevice::~TestowDevice()
@@ -16,7 +17,7 @@ TestowDevice::~TestowDevice()
 
 bool TestowDevice::TestCopyConstructor()
 {
-	owDevice myOwOne("MyDisplayName", "MyInternalName", 2, "5");
+	owDevice myOwOne("MyDisplayName", "MyInternalName", 2, false, "5");
 	owDevice myOwCp(myOwOne);
 	owDevice myOwEq = myOwOne;
 
@@ -51,7 +52,7 @@ bool TestowDevice::TestRound()
 {
     owDevice myOw("MyDisplayName", "", 2, true);
 	int round = myOw.GetRound();
-    assert(2== round);
+    assert(2 == round);
     return true;
 }
 
@@ -59,11 +60,24 @@ bool TestowDevice::TestValue()
 {
 	string value;
 
-    owDevice myOw("MyDisplayName", "", 2, "5");
+    owDevice myOw("MyDisplayName", "", 2, false, "5");
 	value = myOw.GetValue();
-    assert("5"== value);
+    assert("5" == value);
     myOw.SetValue("ZZ");
 	value = myOw.GetValue();
-	assert("ZZ"== value);
+	assert("ZZ" == value);
+    return true;
+}
+
+bool TestowDevice::TestCachedBool()
+{
+    owDevice myOwCached("MyCachedRead", "", 2, false);
+	bool unCachedA = myOwCached.GetUncachedRead();
+    assert(false == unCachedA);
+
+    owDevice myOwUncached("MyUncachedRead", "", 2, true);
+	bool unCachedB = myOwUncached.GetUncachedRead();
+    assert(true == unCachedB);
+
     return true;
 }

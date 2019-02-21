@@ -2,7 +2,7 @@
 
 using namespace std;
 
-owDevice::owDevice() : m_DisplayName(), m_DeviceName(), m_Round(-1), m_Current()
+owDevice::owDevice() : m_DisplayName(), m_DeviceName(), m_Round(-1), m_UncachedRead(false), m_Current()
 {
 }
 

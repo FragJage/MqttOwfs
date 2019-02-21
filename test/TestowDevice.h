@@ -14,4 +14,5 @@ public:
     bool TestDisplayName();
     bool TestRound();
     bool TestValue();
+    bool TestCachedBool();
 };
