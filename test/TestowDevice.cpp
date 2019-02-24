@@ -9,6 +9,7 @@ TestowDevice::TestowDevice() : TestClass("owDevice", this)
 	addTest("Round", &TestowDevice::TestRound);
 	addTest("Value", &TestowDevice::TestValue);
 	addTest("CachedBool", &TestowDevice::TestCachedBool);
+	addTest("Refresh", &TestowDevice::TestRefresh);
 }
 
 TestowDevice::~TestowDevice()
@@ -17,7 +18,7 @@ TestowDevice::~TestowDevice()
 
 bool TestowDevice::TestCopyConstructor()
 {
-	owDevice myOwOne("MyDisplayName", "MyInternalName", 2, false, "5");
+	owDevice myOwOne("MyDisplayName", "MyInternalName", 2, "5");
 	owDevice myOwCp(myOwOne);
 	owDevice myOwEq = myOwOne;
 
@@ -36,12 +37,17 @@ bool TestowDevice::TestCopyConstructor()
 	assert("5" == Value2);
 	assert("5" == Value3);
 
+	bool Read2 = myOwCp.GetUncachedRead();
+	bool Read3 = myOwEq.GetUncachedRead();
+	assert(myOwOne.GetUncachedRead() == Read2);
+	assert(myOwOne.GetUncachedRead() == Read3);
+
 	return true;
 }
 
 bool TestowDevice::TestDisplayName()
 {
-    owDevice myOw("MyDisplayName", "", 0, false);
+    owDevice myOw("MyDisplayName", "", 0);
 	string displayName = myOw.GetDisplayName();
     assert("MyDisplayName"== displayName);
 
@@ -50,7 +56,7 @@ bool TestowDevice::TestDisplayName()
 
 bool TestowDevice::TestRound()
 {
-    owDevice myOw("MyDisplayName", "", 2, true);
+    owDevice myOw("MyDisplayName", "", 2);
 	int round = myOw.GetRound();
     assert(2 == round);
     return true;
@@ -60,7 +66,7 @@ bool TestowDevice::TestValue()
 {
 	string value;
 
-    owDevice myOw("MyDisplayName", "", 2, false, "5");
+    owDevice myOw("MyDisplayName", "", 2, "5");
 	value = myOw.GetValue();
     assert("5" == value);
     myOw.SetValue("ZZ");
@@ -71,13 +77,38 @@ bool TestowDevice::TestValue()
 
 bool TestowDevice::TestCachedBool()
 {
-    owDevice myOwCached("MyCachedRead", "", 2, false);
-	bool unCachedA = myOwCached.GetUncachedRead();
-    assert(false == unCachedA);
+	bool unCached;
 
-    owDevice myOwUncached("MyUncachedRead", "", 2, true);
-	bool unCachedB = myOwUncached.GetUncachedRead();
-    assert(true == unCachedB);
+    owDevice::SetDefaultUncachedRead(false);
+    owDevice myOwCached("MyCachedRead", "", 2);
+	unCached = myOwCached.GetUncachedRead();
+    assert(false == unCached);
+
+    myOwCached.SetUncachedRead(true);
+	unCached = myOwCached.GetUncachedRead();
+    assert(true == unCached);
+
+    owDevice::SetDefaultUncachedRead(true);
+    owDevice myOwUncached("MyUncachedRead", "", 2);
+	unCached = myOwUncached.GetUncachedRead();
+    assert(true == unCached);
+
+    myOwUncached.SetUncachedRead(false);
+	unCached = myOwUncached.GetUncachedRead();
+    assert(false == unCached);
+
+    return true;
+}
+
+bool TestowDevice::TestRefresh()
+{
+    owDevice::SetDefaultRefreshInterval(1);
+    owDevice myDev("myDev", "", 2);
+
+   	Plateforms::delay(1005);
+    assert(true == myDev.RefreshNeeded());
+    myDev.IsRefreshed();
+    assert(false == myDev.RefreshNeeded());
 
     return true;
 }

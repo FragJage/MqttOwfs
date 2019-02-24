@@ -11,7 +11,7 @@
 using namespace std;
 
 
-MqttOwfs::MqttOwfs() : MqttDaemon("owfs", "MqttOwfs"), m_RefreshDevicesInterval(90), m_RefreshValuesInterval(10), m_OwfsClient(), m_DefaultUncachedRead(false)
+MqttOwfs::MqttOwfs() : MqttDaemon("owfs", "MqttOwfs"), m_RefreshDevicesInterval(90), m_OwfsClient()
 {
 	m_OwfsClient.Initialisation("127.0.0.1", 4304);
 }
@@ -37,8 +37,8 @@ void MqttOwfs::DaemonConfigure(SimpleIni& iniFile)
 	LOG_VERBOSE(m_Log) << "Set RefreshDevicesInterval to " << m_RefreshDevicesInterval;
 
 	ivalue = iniFile.GetValue("owfs", "valuesinterval", 10);
-	m_RefreshValuesInterval = ivalue;
-	LOG_VERBOSE(m_Log) << "Set RefreshValuesInterval to " << m_RefreshValuesInterval;
+	owDevice::SetDefaultRefreshInterval(ivalue);
+	LOG_VERBOSE(m_Log) << "Set RefreshValuesInterval to " << ivalue;
 
 	svalue = iniFile.GetValue("owfs", "temperaturescale", "C");
 	chvalue = toupper(svalue.front());
@@ -105,7 +105,7 @@ void MqttOwfs::DaemonConfigure(SimpleIni& iniFile)
 	std::transform(svalue.begin(), svalue.end(), svalue.begin(), ::toupper);
 	if ((svalue == "1") || (svalue == "TRUE") || (svalue == "YES"))
 	{
-		m_DefaultUncachedRead = true;
+	    owDevice::SetDefaultUncachedRead(true);
 		LOG_VERBOSE(m_Log) << "Set Uncached read by default";
 	}
 
@@ -115,10 +115,10 @@ void MqttOwfs::DaemonConfigure(SimpleIni& iniFile)
 
 void MqttOwfs::DevicesConfigure(SimpleIni& iniFile)
 {
+	int ivalue;
 	string svalue;
 	string configName;
 	string displayName;
-	bool uncachedRead;
 	size_t pos;
 	int round;
 
@@ -143,32 +143,41 @@ void MqttOwfs::DevicesConfigure(SimpleIni& iniFile)
 			continue;
 		}
 
-		uncachedRead = m_DefaultUncachedRead;
+		round = iniFile.GetValue(configName, "round", -1);
+
+		OwDeviceAdd(displayName, configName, round);
+
 		svalue = iniFile.GetValue("owfs", "uncachedread", "");
 		if (svalue != "")
 		{
 			std::transform(svalue.begin(), svalue.end(), svalue.begin(), ::toupper);
 			if ((svalue == "1") || (svalue == "TRUE") || (svalue == "YES"))
-				uncachedRead = true;
+				m_OwDevices[configName].SetUncachedRead(true);
 			else if ((svalue == "0") || (svalue == "FALSE") || (svalue == "NO"))
-				uncachedRead = false;
+				m_OwDevices[configName].SetUncachedRead(false);
 			else
 				LOG_WARNING(m_Log) << "Device " << configName << " have an understanding uncachedread value.";
 		}
 
-
-		round = iniFile.GetValue(configName, "round", -1);
-
-		OwDeviceAdd(displayName, configName, round, uncachedRead);
+        ivalue = iniFile.GetValue(configName, "refreshinterval", 0);
+        if (ivalue > 0)
+        {
+            m_OwDevices[configName].SetRefreshInterval(ivalue);
+        }
 	}
 }
 
-void MqttOwfs::RefreshDevices()
+void MqttOwfs::RefreshDevices(bool forceRefresh)
 {
     list<string> lstDir;
     list<string>::iterator iDir;
     string device;
+    time_t timeNow = time((time_t*)0);
+    static time_t lastRefreshDevices = timeNow;
 
+
+	if((timeNow-lastRefreshDevices<m_RefreshDevicesInterval)&&(!forceRefresh)) return;
+    lastRefreshDevices = timeNow;
 
     try
     {
@@ -233,15 +242,15 @@ string MqttOwfs::OwGetValue(const string& configName, int round, bool uncachedRe
     return s.str();
 }
 
-void MqttOwfs::OwDeviceAdd(const string& displayName, const string& configName, int round, bool uncachedread)
+void MqttOwfs::OwDeviceAdd(const string& displayName, const string& configName, int round)
 {
     string value;
 
 
-    value = OwGetValue(configName, round, uncachedread);
+    value = OwGetValue(configName, round, false);
 
     LOG_VERBOSE(m_Log) << "Device created " << displayName <<" : "<< configName << " (round " << round << ") = "<< value;
-    m_OwDevices.emplace(piecewise_construct, forward_as_tuple(configName), forward_as_tuple(displayName, configName, round, uncachedread, value));
+    m_OwDevices.emplace(piecewise_construct, forward_as_tuple(configName), forward_as_tuple(displayName, configName, round, value));
 	lock_guard<mutex> lock(m_MqttQueueAccess);
 	m_MqttQueue.emplace(displayName, value);
 }
@@ -268,37 +277,37 @@ void MqttOwfs::OwDeviceAdd(const string& name)
     switch(family)
     {
 		case 0x05 : 	//DS2405
-		    OwDeviceAdd(name, name+"/PIO", -1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/PIO", -1);
 			break;
 		case 0x10 :		//DS18S20, DS1920
-		    OwDeviceAdd(name, name+"/temperature9", 1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/temperature9", 1);
 			break;
 		case 0x12 :		//DS2406/07
-		    OwDeviceAdd(name, name+"/PIO.A", -1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/PIO.A", -1);
 			break;
 		case 0x1D :		//DS2423
-		    OwDeviceAdd(name, name+"/counters.A", -1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/counters.A", -1);
 			break;
 		case 0x20 : 	//DS2450
-		    OwDeviceAdd(name, name+"/PIO.A", -1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/PIO.A", -1);
 			break;
 		case 0x21 :		//DS1921
-		    OwDeviceAdd(name, name+"/temperature9", 1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/temperature9", 1);
 			break;
 		case 0x22 :		//DS1822
-		    OwDeviceAdd(name, name+"/temperature9", 1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/temperature9", 1);
 			break;
 		case 0x26 :		//DS2438
-		    OwDeviceAdd(name, name+"/VDD", 1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/VDD", 1);
 			break;
 		case 0x28 : 	//DS18B20
-		    OwDeviceAdd(name, name+"/temperature9", 1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/temperature9", 1);
 			break;
 		case 0x29 : 	//DS2408
-		    OwDeviceAdd(name, name+"/PIO.BYTE", -1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/PIO.BYTE", -1);
 			break;
 		case 0x3A : 	//DS2413
-		    OwDeviceAdd(name, name+"/PIO.A", -1, m_DefaultUncachedRead);
+		    OwDeviceAdd(name, name+"/PIO.A", -1);
 			break;
     }
 
@@ -320,38 +329,21 @@ bool MqttOwfs::RefreshValue(const string& name, owDevice& device)
 	return true;
 }
 
-void MqttOwfs::RefreshValues()
+void MqttOwfs::RefreshValues(bool forceRefresh)
 {
     std::map<std::string, owDevice>::iterator it;
 	bool newvalue = false;
 
-
     for(it=m_OwDevices.begin(); it!=m_OwDevices.end(); ++it)
-		if(RefreshValue(it->first, it->second)) newvalue = true;
+    {
+        if((forceRefresh)||(it->second.RefreshNeeded()))
+        {
+            if(RefreshValue(it->first, it->second)) newvalue = true;
+            it->second.IsRefreshed();
+        }
+    }
 
 	if(newvalue) m_MqttQueueCond.notify_one();
-}
-
-void MqttOwfs::Refresh()
-{
-	 time_t timeNow = time((time_t*)0);
-	 static time_t lastRefreshDevices = timeNow;
-	 static time_t lastRefreshValues = timeNow;
-
-
-	if(timeNow-lastRefreshDevices>=m_RefreshDevicesInterval)
-    {
-        lastRefreshDevices=timeNow;
-        LOG_VERBOSE(m_Log) << "Refresh devices";
-		RefreshDevices();
-    }
-
-	if(timeNow-lastRefreshValues>=m_RefreshValuesInterval)
-    {
-        lastRefreshValues=timeNow;
-        LOG_VERBOSE(m_Log) << "Refresh values";
-        RefreshValues();
-    }
 }
 
 void MqttOwfs::MessageForService(const string& msg)
@@ -366,11 +358,11 @@ void MqttOwfs::MessageForService(const string& msg)
 	}
 	else if (msg == "REFRESH_DEVICES")
 	{
-		RefreshDevices();
+		RefreshDevices(true);
 	}
 	else if (msg == "REFRESH_VALUES")
 	{
-		RefreshValues();
+		RefreshValues(true);
 	}
 	else
 	{
@@ -441,7 +433,7 @@ void MqttOwfs::on_message(const string& topic, const string& message)
 int MqttOwfs::DaemonLoop(int argc, char* argv[])
 {
 	LOG_ENTER;
-	RefreshDevices();
+	RefreshDevices(true);
 
 	Subscribe(GetMainTopic() + "command/#");
 	LOG_VERBOSE(m_Log) << "Subscript to : " << GetMainTopic() + "command/#";
@@ -471,7 +463,8 @@ int MqttOwfs::DaemonLoop(int argc, char* argv[])
 		}
 		if (!bPause)
 		{
-			Refresh();
+            RefreshDevices(false);
+            RefreshValues(false);
 			SendMqttMessages();
 		}
 	}

@@ -44,9 +44,9 @@ install:
 script:
   - cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER)
   - make
+  - ./test/bin/unittest
   - coveralls --include src --gcov-options '\-lp' --gcov 'gcov-4.9'
 
 after_success:
-  - ./test/bin/unittest
   - valgrind --error-exitcode=0 --leak-check=full ./test/bin/unittest
 

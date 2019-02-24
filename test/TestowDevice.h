@@ -1,4 +1,5 @@
 #include <cassert>
+#include "Plateforms.h"
 #include "UnitTest.h"
 #include "../src/owDevice.h"
 
@@ -15,4 +16,5 @@ public:
     bool TestRound();
     bool TestValue();
     bool TestCachedBool();
+    bool TestRefresh();
 };
