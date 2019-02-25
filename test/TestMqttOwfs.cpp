@@ -171,45 +171,39 @@ bool TestMqttOwfs::CoverageConfig()
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs1.conf");
 	thread integrationTest1(ThreadConf, &mqttOwfs);
 	integrationTest1.detach();
-	waitMsg(1, 800);
-	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(300);
+	waitMsg(1, 400);
+	m_Messages.clear();
+	Plateforms::delay(100);
 
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs2.conf");
-	thread integrationTest2(ThreadConf, &mqttOwfs);
-	integrationTest2.detach();
-	waitMsg(1, 800);
-	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(300);
+   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
+	waitMsg(1, 400);
+	m_Messages.clear();
+	Plateforms::delay(100);
 
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs3.conf");
-	thread integrationTest3(ThreadConf, &mqttOwfs);
-	integrationTest3.detach();
-	waitMsg(1, 800);
-	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(800);
+   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
+	waitMsg(1, 400);
+	m_Messages.clear();
+	Plateforms::delay(100);
 
-    /*
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs4.conf");
-	thread integrationTest4(ThreadConf, &mqttOwfs);
-	integrationTest4.detach();
-	waitMsg(1, 500);
-	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(600);
+   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
+	waitMsg(1, 400);
+	m_Messages.clear();
+	Plateforms::delay(100);
 
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs5.conf");
-	thread integrationTest5(ThreadConf, &mqttOwfs);
-	integrationTest5.detach();
+   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
 	waitMsg(1, 400);
-	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
+	m_Messages.clear();
 	Plateforms::delay(100);
 
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs6.conf");
-	thread integrationTest6(ThreadConf, &mqttOwfs);
-	integrationTest6.detach();
+   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
 	waitMsg(1, 400);
-	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
+	m_Messages.clear();
 	Plateforms::delay(100);
-	*/
+
     return true;
 }
