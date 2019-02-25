@@ -11,9 +11,9 @@ TestMqttOwfs::TestMqttOwfs() : TestClass("MqttOwfs", this)
 	addTest("Stop", &TestMqttOwfs::Stop);
 	addTest("CoverageConfig", &TestMqttOwfs::CoverageConfig);
 
-	mqttClient.SetMessageCallback(this);
-	mqttClient.Connect();
-	mqttClient.Subscribe("owfs/#");
+	//mqttClient.SetMessageCallback(this);
+	//mqttClient.Connect();
+	//mqttClient.Subscribe("owfs/#");
 }
 
 TestMqttOwfs::~TestMqttOwfs()
@@ -173,23 +173,23 @@ bool TestMqttOwfs::CoverageConfig()
 	integrationTest1.detach();
 	waitMsg(1, 800);
 	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(200);
+	Plateforms::delay(300);
 
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs2.conf");
 	thread integrationTest2(ThreadConf, &mqttOwfs);
 	integrationTest2.detach();
 	waitMsg(1, 800);
 	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(200);
+	Plateforms::delay(300);
 
-    /*
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs3.conf");
 	thread integrationTest3(ThreadConf, &mqttOwfs);
 	integrationTest3.detach();
 	waitMsg(1, 800);
 	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(200);
+	Plateforms::delay(800);
 
+    /*
     mqttOwfs.SetConfigfile("./test/data/MqttOwfs4.conf");
 	thread integrationTest4(ThreadConf, &mqttOwfs);
 	integrationTest4.detach();
