@@ -13,7 +13,7 @@ TestMqttOwfs::TestMqttOwfs() : TestClass("MqttOwfs", this)
 
 	mqttClient.SetMessageCallback(this);
 	mqttClient.Connect();
-	//mqttClient.Subscribe("owfs/#");
+	mqttClient.Subscribe("owfs/#");
 }
 
 TestMqttOwfs::~TestMqttOwfs()
