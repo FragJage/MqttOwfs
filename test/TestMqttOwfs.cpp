@@ -11,8 +11,8 @@ TestMqttOwfs::TestMqttOwfs() : TestClass("MqttOwfs", this)
 	addTest("Stop", &TestMqttOwfs::Stop);
 	addTest("CoverageConfig", &TestMqttOwfs::CoverageConfig);
 
-	//mqttClient.SetMessageCallback(this);
-	//mqttClient.Connect();
+	mqttClient.SetMessageCallback(this);
+	mqttClient.Connect();
 	//mqttClient.Subscribe("owfs/#");
 }
 

@@ -1,9 +1,9 @@
 language: cpp
-
+dist: xenial
 compiler: gcc
 env:
   global:
-    - COMPILER=g++-4.9
+    - COMPILER=g++
 
 sudo: required
 
@@ -12,7 +12,6 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-4.9
       - valgrind
       - owfs
       - mosquitto
@@ -45,7 +44,7 @@ script:
   - cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER)
   - make
   - ./test/bin/unittest
-  - coveralls --include src --gcov-options '\-lp' --gcov 'gcov-4.9'
+  - coveralls --include src --gcov-options '\-lp' --gcov 'gcov'
 
 after_success:
   - valgrind --error-exitcode=0 --leak-check=full ./test/bin/unittest
