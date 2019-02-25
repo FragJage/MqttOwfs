@@ -1,7 +1,8 @@
 #ifndef OWDEVICE_H
 #define OWDEVICE_H
 
-#include<string>
+#include <string>
+#include <time.h>
 
 class owDevice
 {
