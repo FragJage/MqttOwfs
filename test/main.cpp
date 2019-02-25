@@ -17,7 +17,7 @@ int main()
     try
     {
         unitTest.addTestClass(new TestowDevice());
-        //unitTest.addTestClass(new TestMqttOwfs());
+        unitTest.addTestClass(new TestMqttOwfs());
     }
     catch(const exception &e)
     {
