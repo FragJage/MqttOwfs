@@ -15,19 +15,25 @@ TestowDevice::TestowDevice() : TestClass("owDevice", this)
 
 TestowDevice::~TestowDevice()
 {
-	owDevice myOwOne();
-	
+}
+
+bool TestowDevice::TestConstructor()
+{
+	owDevice myOwOne;
+
 	string Name = myOwOne.GetDisplayName();
 	assert("" == Name);
 
 	int Rnd = myOwOne.GetRound();
 	assert(-1 == Rnd);
-	
+
 	string Value = myOwOne.GetValue();
 	assert("" == Value);
-	
+
 	owDevice myOwTwo("SwapDisplay", "SwapName", 3);
 	myOwTwo.swap(myOwOne);
+
+	return true;
 }
 
 bool TestowDevice::TestCopyConstructor()
@@ -120,22 +126,22 @@ bool TestowDevice::TestRefresh()
     owDevice::SetDefaultRefreshInterval(1);
     owDevice myDev("myDev", "", 2);
 
+	refreshNeeded = myDev.RefreshNeeded();
+    assert(false == refreshNeeded);
+
    	Plateforms::delay(1005);
 	refreshNeeded = myDev.RefreshNeeded();
     assert(true == refreshNeeded);
-	
-	refreshNeeded = myDev.RefreshNeeded();
+
     myDev.IsRefreshed();
+	refreshNeeded = myDev.RefreshNeeded();
     assert(false == refreshNeeded);
 
 	myDev.SetRefreshInterval(2);
-	refreshNeeded = myDev.RefreshNeeded();
-    assert(false == refreshNeeded);
-
    	Plateforms::delay(1005);
 	refreshNeeded = myDev.RefreshNeeded();
     assert(false == refreshNeeded);
-	
+
    	Plateforms::delay(1005);
 	refreshNeeded = myDev.RefreshNeeded();
     assert(true == refreshNeeded);
