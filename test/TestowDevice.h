@@ -11,6 +11,7 @@ public:
     TestowDevice();
     ~TestowDevice();
 
+	bool TestConstructor();
 	bool TestCopyConstructor();
     bool TestDisplayName();
     bool TestRound();

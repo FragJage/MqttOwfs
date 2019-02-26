@@ -4,6 +4,7 @@ using namespace std;
 
 TestowDevice::TestowDevice() : TestClass("owDevice", this)
 {
+	addTest("Constructor", &TestowDevice::TestConstructor);
 	addTest("CopyConstructor", &TestowDevice::TestCopyConstructor);
 	addTest("DisplayName", &TestowDevice::TestDisplayName);
 	addTest("Round", &TestowDevice::TestRound);
@@ -14,6 +15,19 @@ TestowDevice::TestowDevice() : TestClass("owDevice", this)
 
 TestowDevice::~TestowDevice()
 {
+	owDevice myOwOne();
+	
+	string Name = myOwOne.GetDisplayName();
+	assert("" == Name);
+
+	int Rnd = myOwOne.GetRound();
+	assert(-1 == Rnd);
+	
+	string Value = myOwOne.GetValue();
+	assert("" == Value);
+	
+	owDevice myOwTwo("SwapDisplay", "SwapName", 3);
+	myOwTwo.swap(myOwOne);
 }
 
 bool TestowDevice::TestCopyConstructor()
@@ -113,6 +127,18 @@ bool TestowDevice::TestRefresh()
 	refreshNeeded = myDev.RefreshNeeded();
     myDev.IsRefreshed();
     assert(false == refreshNeeded);
+
+	myDev.SetRefreshInterval(2);
+	refreshNeeded = myDev.RefreshNeeded();
+    assert(false == refreshNeeded);
+
+   	Plateforms::delay(1005);
+	refreshNeeded = myDev.RefreshNeeded();
+    assert(false == refreshNeeded);
+	
+   	Plateforms::delay(1005);
+	refreshNeeded = myDev.RefreshNeeded();
+    assert(true == refreshNeeded);
 
     return true;
 }

@@ -364,6 +364,16 @@ void MqttOwfs::MessageForService(const string& msg)
 	{
 		RefreshValues(true);
 	}
+	else if (msg == "RELOAD_CONFIG")
+	{
+        Unsubscribe(GetMainTopic() + "command/#");
+        Disconnect();
+		Configure();
+    	Connect();
+        Subscribe(GetMainTopic() + "command/#");
+        RefreshDevices(true);
+        RefreshValues(true);
+	}
 	else
 	{
 		LOG_WARNING(m_Log) << "Unknown command for service " << msg;
