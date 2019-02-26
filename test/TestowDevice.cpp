@@ -39,8 +39,8 @@ bool TestowDevice::TestCopyConstructor()
 
 	bool Read2 = myOwCp.GetUncachedRead();
 	bool Read3 = myOwEq.GetUncachedRead();
-	assert(myOwOne.GetUncachedRead() == Read2);
-	assert(myOwOne.GetUncachedRead() == Read3);
+	assert(false == Read2);
+	assert(false == Read3);
 
 	return true;
 }
@@ -102,13 +102,17 @@ bool TestowDevice::TestCachedBool()
 
 bool TestowDevice::TestRefresh()
 {
+	bool refreshNeeded;
     owDevice::SetDefaultRefreshInterval(1);
     owDevice myDev("myDev", "", 2);
 
    	Plateforms::delay(1005);
-    assert(true == myDev.RefreshNeeded());
+	refreshNeeded = myDev.RefreshNeeded();
+    assert(true == refreshNeeded);
+	
+	refreshNeeded = myDev.RefreshNeeded();
     myDev.IsRefreshed();
-    assert(false == myDev.RefreshNeeded());
+    assert(false == refreshNeeded);
 
     return true;
 }
