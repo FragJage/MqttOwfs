@@ -366,13 +366,7 @@ void MqttOwfs::MessageForService(const string& msg)
 	}
 	else if (msg == "RELOAD_CONFIG")
 	{
-        Unsubscribe(GetMainTopic() + "command/#");
-        Disconnect();
-		Configure();
-    	Connect();
-        Subscribe(GetMainTopic() + "command/#");
-        RefreshDevices(true);
-        RefreshValues(true);
+	    m_RestartCond.notify_one();
 	}
 	else
 	{
@@ -442,6 +436,7 @@ void MqttOwfs::on_message(const string& topic, const string& message)
 
 int MqttOwfs::DaemonLoop(int argc, char* argv[])
 {
+    int ret = 0;
 	LOG_ENTER;
 	RefreshDevices(true);
 
@@ -454,22 +449,28 @@ int MqttOwfs::DaemonLoop(int argc, char* argv[])
 	bool bPause = false;
 	while (!bStop)
 	{
-		int cond = Service::Get()->WaitFor({ m_MqttQueueCond }, 200);
-		if (cond == Service::STATUS_CHANGED)
+		int cond = Service::Get()->WaitFor({ m_RestartCond, m_MqttQueueCond }, 250);
+		switch(cond)
 		{
-			switch (Service::Get()->GetStatus())
-			{
-			case Service::StatusKind::PAUSE:
-				bPause = true;
-				break;
-			case Service::StatusKind::START:
-				bPause = false;
-				cond = 1;
-				break;
-			case Service::StatusKind::STOP:
-				bStop = true;
-				break;
-			}
+		    case 0 :
+                switch (Service::Get()->GetStatus())
+                {
+                    case Service::StatusKind::PAUSE:
+                        bPause = true;
+                        break;
+                    case Service::StatusKind::START:
+                        bPause = false;
+                        cond = 1;
+                        break;
+                    case Service::StatusKind::STOP:
+                        bStop = true;
+                        break;
+                }
+                break;
+            case 1 :
+                bStop = true;
+                ret = MqttDaemon::RESTART_MQTTDAEMON;
+                break;
 		}
 		if (!bPause)
 		{
@@ -480,7 +481,7 @@ int MqttOwfs::DaemonLoop(int argc, char* argv[])
 	}
 
 	LOG_EXIT_OK;
-    return 0;
+    return ret;
 }
 
 void MqttOwfs::SendMqttMessages()

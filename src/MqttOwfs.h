@@ -47,6 +47,7 @@ class MqttOwfs : public MqttDaemon
 
 		std::mutex m_MqttQueueAccess;
 		ServiceConditionVariable m_MqttQueueCond;
+		ServiceConditionVariable m_RestartCond;
 		std::queue<MqttQueue> m_MqttQueue;
 };
 
