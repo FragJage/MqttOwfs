@@ -29,13 +29,9 @@
 				<Option parameters="/Console" />
 				<Compiler>
 					<Add option="-std=c++11" />
-					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
 				</Compiler>
-				<Linker>
-					<Add option="-m32" />
-				</Linker>
 			</Target>
 		</Build>
 		<Compiler>

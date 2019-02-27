@@ -42,6 +42,7 @@ void MqttOwfs::DaemonConfigure(SimpleIni& iniFile)
 
 	svalue = iniFile.GetValue("owfs", "temperaturescale", "C");
 	chvalue = toupper(svalue.front());
+
 	switch (chvalue)
 	{
 		case 'C':
