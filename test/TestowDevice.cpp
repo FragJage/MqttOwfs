@@ -6,6 +6,7 @@ TestowDevice::TestowDevice() : TestClass("owDevice", this)
 {
 	addTest("Constructor", &TestowDevice::TestConstructor);
 	addTest("CopyConstructor", &TestowDevice::TestCopyConstructor);
+	addTest("MoveAssignment", &TestowDevice::TestMoveAssignment);
 	addTest("DisplayName", &TestowDevice::TestDisplayName);
 	addTest("Round", &TestowDevice::TestRound);
 	addTest("Value", &TestowDevice::TestValue);
@@ -65,6 +66,24 @@ bool TestowDevice::TestCopyConstructor()
 	return true;
 }
 
+bool TestowDevice::TestMoveAssignment()
+{
+	owDevice myOwOne("MyDisplayName", "MyMoveName", 1, "MM");
+	owDevice myOwTwo;
+
+	myOwTwo = std::move(myOwOne);
+	
+	string Name = myOwTwo.GetDisplayName();
+	assert("MyDisplayName" == Name);
+
+	int Rnd = myOwTwo.GetRound();
+	assert(1 == Rnd);
+
+	string Value = myOwTwo.GetValue();
+	assert("MM" == Value);
+
+	return true;
+}
 bool TestowDevice::TestDisplayName()
 {
     owDevice myOw("MyDisplayName", "", 0);

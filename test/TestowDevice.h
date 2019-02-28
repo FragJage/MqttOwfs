@@ -13,6 +13,7 @@ public:
 
 	bool TestConstructor();
 	bool TestCopyConstructor();
+	bool TestMoveAssignment();
     bool TestDisplayName();
     bool TestRound();
     bool TestValue();
