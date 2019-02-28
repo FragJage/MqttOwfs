@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "owDevice.h"
 
 using namespace std;
@@ -32,11 +34,11 @@ void owDevice::swap(owDevice& other)
 {
     std::swap(m_DisplayName, other.m_DisplayName);
     std::swap(m_DeviceName, other.m_DeviceName);
-    m_Round = other.m_Round;
+    std::swap(m_Round, other.m_Round);
     std::swap(m_Current, other.m_Current);
-	m_UncachedRead = other.m_UncachedRead;
-	m_RefreshInterval = other.m_RefreshInterval;
-	m_LastRefresh = other.m_LastRefresh;
+	std::swap(m_UncachedRead, other.m_UncachedRead);
+	std::swap(m_RefreshInterval, other.m_RefreshInterval);
+	std::swap(m_LastRefresh, other.m_LastRefresh);
 }
 
 owDevice::owDevice(owDevice const& other):
@@ -48,7 +50,6 @@ owDevice::owDevice(owDevice const& other):
 	m_RefreshInterval{other.m_RefreshInterval},
 	m_LastRefresh{other.m_LastRefresh}
 {
-
 }
 
 owDevice& owDevice::operator=(owDevice const& other)
