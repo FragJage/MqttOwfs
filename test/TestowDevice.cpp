@@ -72,7 +72,7 @@ bool TestowDevice::TestMoveAssignment()
 	owDevice myOwTwo;
 
 	myOwTwo = std::move(myOwOne);
-	
+
 	string Name = myOwTwo.GetDisplayName();
 	assert("MyDisplayName" == Name);
 
@@ -146,23 +146,28 @@ bool TestowDevice::TestRefresh()
     owDevice myDev("myDev", "", 2);
 
 	refreshNeeded = myDev.RefreshNeeded();
+cout << "1" << endl;
     assert(false == refreshNeeded);
 
    	Plateforms::delay(1005);
 	refreshNeeded = myDev.RefreshNeeded();
+cout << "2" << endl;
     assert(true == refreshNeeded);
 
     myDev.IsRefreshed();
 	refreshNeeded = myDev.RefreshNeeded();
+cout << "3" << endl;
     assert(false == refreshNeeded);
 
 	myDev.SetRefreshInterval(2);
-   	Plateforms::delay(1005);
+   	Plateforms::delay(505);
 	refreshNeeded = myDev.RefreshNeeded();
+cout << "4" << endl;
     assert(false == refreshNeeded);
 
-   	Plateforms::delay(1005);
+   	Plateforms::delay(1505);
 	refreshNeeded = myDev.RefreshNeeded();
+cout << "5" << endl;
     assert(true == refreshNeeded);
 
     return true;
