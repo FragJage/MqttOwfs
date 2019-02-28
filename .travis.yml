@@ -44,8 +44,8 @@ script:
   - cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER)
   - make
   - ./test/bin/unittest
-  - coveralls --include src --gcov-options '\-lp' --gcov 'gcov'
 
 after_success:
+  - coveralls --include src --gcov-options '\-lp' --gcov 'gcov'
   - valgrind --error-exitcode=0 --leak-check=full ./test/bin/unittest
 
