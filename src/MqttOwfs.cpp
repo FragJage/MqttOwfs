@@ -148,7 +148,7 @@ void MqttOwfs::DevicesConfigure(SimpleIni& iniFile)
 
 		OwDeviceAdd(displayName, configName, round);
 
-		svalue = iniFile.GetValue("owfs", "uncachedread", "");
+		svalue = iniFile.GetValue(configName, "uncachedread", "");
 		if (svalue != "")
 		{
 			std::transform(svalue.begin(), svalue.end(), svalue.begin(), ::toupper);
