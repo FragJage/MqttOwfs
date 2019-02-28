@@ -146,11 +146,11 @@ bool TestMqttOwfs::Commands()
 bool TestMqttOwfs::Stop()
 {
 	Service::Get()->ChangeStatus(Service::StatusKind::PAUSE);
-	Plateforms::delay(50);
+	Plateforms::delay(350);
 	Service::Get()->ChangeStatus(Service::StatusKind::START);
-	Plateforms::delay(50);
+	Plateforms::delay(350);
 	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(100);
+	Plateforms::delay(205);
 
 	return true;
 }
