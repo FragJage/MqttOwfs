@@ -12,6 +12,7 @@ TestowDevice::TestowDevice() : TestClass("owDevice", this)
 	addTest("Value", &TestowDevice::TestValue);
 	addTest("CachedBool", &TestowDevice::TestCachedBool);
 	addTest("Refresh", &TestowDevice::TestRefresh);
+	addTest("IsPresent", &TestowDevice::TestIsPresent);
 }
 
 TestowDevice::~TestowDevice()
@@ -164,6 +165,26 @@ bool TestowDevice::TestRefresh()
    	Plateforms::delay(1505);
 	refreshNeeded = myDev.RefreshNeeded();
     assert(true == refreshNeeded);
+
+    return true;
+}
+
+bool TestowDevice::TestIsPresent()
+{
+ 	bool onlyPresent;
+ 	string deviceName;
+
+ 	owDevice myOwOne("DisplayName", "MyDevice/IsPresent", 2, "5");
+ 	onlyPresent = myOwOne.OnlyPresence();
+ 	deviceName = myOwOne.GetDeviceName();
+ 	assert(true == onlyPresent);
+ 	assert("MyDevice" == deviceName);
+
+ 	owDevice myOwTwo("DisplayName", "MyDevice/Temperature9", 2, "5");
+ 	onlyPresent = myOwTwo.OnlyPresence();
+ 	deviceName = myOwTwo.GetDeviceName();
+ 	assert(false == onlyPresent);
+ 	assert("MyDevice/Temperature9" == deviceName);
 
     return true;
 }

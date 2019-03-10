@@ -153,9 +153,15 @@ void MqttOwfs::DevicesConfigure(SimpleIni& iniFile)
 		{
 			std::transform(svalue.begin(), svalue.end(), svalue.begin(), ::toupper);
 			if ((svalue == "1") || (svalue == "TRUE") || (svalue == "YES"))
+            {
 				m_OwDevices[configName].SetUncachedRead(true);
+                LOG_VERBOSE(m_Log) << "Set special uncached read on this device to true.";
+            }
 			else if ((svalue == "0") || (svalue == "FALSE") || (svalue == "NO"))
+            {
 				m_OwDevices[configName].SetUncachedRead(false);
+                LOG_VERBOSE(m_Log) << "Set special uncached read on this device to false.";
+            }
 			else
 				LOG_WARNING(m_Log) << "Device " << configName << " have an understanding uncachedread value.";
 		}
@@ -164,6 +170,7 @@ void MqttOwfs::DevicesConfigure(SimpleIni& iniFile)
         if (ivalue > 0)
         {
             m_OwDevices[configName].SetRefreshInterval(ivalue);
+            LOG_VERBOSE(m_Log) << "Set special refresh interval on this device : " << ivalue << " s.";
         }
 	}
 }
@@ -243,17 +250,38 @@ string MqttOwfs::OwGetValue(const string& configName, int round, bool uncachedRe
     return s.str();
 }
 
+string MqttOwfs::OwIsPresent(const string& configName, bool uncachedRead)
+{
+    list<string> lstDir;
+    list<string>::iterator itPos;
+    list<string>::iterator itEnd;
+    string isPresent = "0";
+
+
+    LOG_TRACE(m_Log) << "Search presence of " << configName << " with uncachedread to " << uncachedRead;
+    try
+    {
+		m_OwfsClient.SetOwserverFlag(owfscpp::Uncached, uncachedRead);
+        lstDir = m_OwfsClient.DirAll("");
+
+        itEnd = lstDir.end();
+        itPos = find(lstDir.begin() , itEnd, "/"+configName);
+        if(itPos != itEnd) isPresent = "1";
+    }
+    catch (const exception& e)
+    {
+        LOG_WARNING(m_Log) << "Unable to get presence of " << configName << " : " << e.what();
+    }
+
+    LOG_TRACE(m_Log) << "Found " << isPresent;
+    return isPresent;
+}
+
 void MqttOwfs::OwDeviceAdd(const string& displayName, const string& configName, int round)
 {
-    string value;
-
-
-    value = OwGetValue(configName, round, false);
-
-    LOG_VERBOSE(m_Log) << "Device created " << displayName <<" : "<< configName << " (round " << round << ") = "<< value;
-    m_OwDevices.emplace(piecewise_construct, forward_as_tuple(configName), forward_as_tuple(displayName, configName, round, value));
-	lock_guard<mutex> lock(m_MqttQueueAccess);
-	m_MqttQueue.emplace(displayName, value);
+    LOG_VERBOSE(m_Log) << "Device created " << displayName <<" : "<< configName << " (round " << round << ")";
+    m_OwDevices.emplace(piecewise_construct, forward_as_tuple(configName), forward_as_tuple(displayName, configName, round));
+    RefreshValue(m_OwDevices[configName]);
 }
 
 void MqttOwfs::OwDeviceAdd(const string& name)
@@ -277,6 +305,9 @@ void MqttOwfs::OwDeviceAdd(const string& name)
 
     switch(family)
     {
+		case 0x01 : 	//DS2401
+		    OwDeviceAdd(name, name+"/IsPresent", -1);
+			break;
 		case 0x05 : 	//DS2405
 		    OwDeviceAdd(name, name+"/PIO", -1);
 			break;
@@ -315,11 +346,23 @@ void MqttOwfs::OwDeviceAdd(const string& name)
     LOG_VERBOSE(m_Log) << "Device found " << name;
 }
 
-bool MqttOwfs::RefreshValue(const string& name, owDevice& device)
+bool MqttOwfs::RefreshValue(owDevice& device)
 {
     string value;
+    string name = device.GetDeviceName();
 
-    value = OwGetValue(name, device.GetRound(), device.GetUncachedRead());
+    if(device.OnlyPresence())
+    {
+        LOG_TRACE(m_Log) << "Search device " << name;
+        value = OwIsPresent(name, device.GetUncachedRead());
+    }
+    else
+    {
+        LOG_TRACE(m_Log) << "Read value for " << name;
+        value = OwGetValue(name, device.GetRound(), device.GetUncachedRead());
+    }
+
+    device.IsRefreshed();
     if(value==device.GetValue()) return false;
 
     device.SetValue(value);
@@ -339,8 +382,7 @@ void MqttOwfs::RefreshValues(bool forceRefresh)
     {
         if((forceRefresh)||(it->second.RefreshNeeded()))
         {
-            if(RefreshValue(it->first, it->second)) newvalue = true;
-            it->second.IsRefreshed();
+            if(RefreshValue(it->second)) newvalue = true;
         }
     }
 
@@ -408,7 +450,7 @@ void MqttOwfs::MessageForDevice(const string& device, const string& msg)
 		m_OwfsClient.Write(it->first, msg);
 	}
 
-	if(RefreshValue(it->first, it->second))
+	if(RefreshValue(it->second))
 		m_MqttQueueCond.notify_one();
 }
 

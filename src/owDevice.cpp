@@ -1,6 +1,5 @@
-#include <iostream>
-
 #include "owDevice.h"
+#include "StringTools.h"
 
 using namespace std;
 
@@ -24,6 +23,14 @@ owDevice::owDevice(const string& displayName, const string& deviceName, int roun
     m_UncachedRead = owDevice::m_DefaultUncachedRead;
     m_RefreshInterval = owDevice::m_DefaultRefreshInterval;
     m_LastRefresh = time((time_t*)0);
+    m_OnlyPresence = false;
+
+    int pos = m_DeviceName.length()-10;
+    if((pos>0) && (StringTools::IsEqualCaseInsensitive(m_DeviceName.substr(pos), "/IsPresent")))
+    {
+        m_DeviceName = m_DeviceName.substr(0, pos);
+        m_OnlyPresence = true;
+    }
 }
 
 owDevice::~owDevice()
@@ -80,9 +87,19 @@ string owDevice::GetDisplayName()
     return m_DisplayName;
 }
 
+string owDevice::GetDeviceName()
+{
+    return m_DeviceName;
+}
+
 int owDevice::GetRound()
 {
     return m_Round;
+}
+
+bool owDevice::OnlyPresence()
+{
+    return m_OnlyPresence;
 }
 
 bool owDevice::GetUncachedRead()

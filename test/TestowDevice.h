@@ -19,4 +19,5 @@ public:
     bool TestValue();
     bool TestCachedBool();
     bool TestRefresh();
+    bool TestIsPresent();
 };

@@ -19,9 +19,11 @@ class owDevice
         owDevice& operator=(owDevice&& other) noexcept;
 
         std::string GetDisplayName();
+        std::string GetDeviceName();
         int GetRound();
 		bool GetUncachedRead();
         std::string GetValue();
+        bool OnlyPresence();
 
         void SetValue(const std::string& current);
         void SetUncachedRead(bool uncachedRead);
@@ -37,6 +39,7 @@ class owDevice
         std::string m_DeviceName;
         int m_Round;
         std::string m_Current;
+        bool m_OnlyPresence;
 		bool m_UncachedRead;
         int m_RefreshInterval;
         time_t m_LastRefresh;
