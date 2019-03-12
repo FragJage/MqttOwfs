@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
         MqttOwfs mqttOwfs;
 
         Service* pService = Service::Create("MqttOwfs", "Mqtt protocol bridge for Owfs", &mqttOwfs);
+        pService->SetVersion("1.1");
         res = pService->Start(argc, argv);
         Service::Destroy();
     }
