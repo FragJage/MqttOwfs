@@ -18,13 +18,12 @@ owDevice::owDevice(const string& displayName, const string& deviceName, int roun
     m_DisplayName(displayName),
     m_DeviceName(deviceName),
     m_Round(round),
-    m_Current(current)
+    m_Current(current),
+    m_OnlyPresence(false),
+    m_UncachedRead(owDevice::m_DefaultUncachedRead),
+    m_RefreshInterval(owDevice::m_DefaultRefreshInterval),
+    m_LastRefresh(time((time_t*)0))
 {
-    m_UncachedRead = owDevice::m_DefaultUncachedRead;
-    m_RefreshInterval = owDevice::m_DefaultRefreshInterval;
-    m_LastRefresh = time((time_t*)0);
-    m_OnlyPresence = false;
-
     int pos = m_DeviceName.length()-10;
     if((pos>0) && (StringTools::IsEqualCaseInsensitive(m_DeviceName.substr(pos), "/IsPresent")))
     {
@@ -65,15 +64,15 @@ owDevice& owDevice::operator=(owDevice const& other)
     return *this;
 }
 
-owDevice::owDevice(owDevice &&other)
+owDevice::owDevice(owDevice &&other) :
+    m_DisplayName(move(other.m_DisplayName)),
+    m_DeviceName(move(other.m_DeviceName)),
+    m_Round(other.m_Round),
+    m_Current(move(other.m_Current)),
+	m_UncachedRead(other.m_UncachedRead),
+	m_RefreshInterval(other.m_RefreshInterval),
+	m_LastRefresh(other.m_LastRefresh)
 {
-    m_DisplayName = move(other.m_DisplayName);
-    m_DeviceName = move(other.m_DeviceName);
-    m_Round = other.m_Round;
-    m_Current = move(other.m_Current);
-	m_UncachedRead = other.m_UncachedRead;
-	m_RefreshInterval = other.m_RefreshInterval;
-	m_LastRefresh = other.m_LastRefresh;
 }
 
 owDevice& owDevice::operator=(owDevice&& other) noexcept
