@@ -11,6 +11,7 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+      - sourceline: 'ppa:mosquitto-dev/mosquitto-ppa'
     packages:
       - valgrind
       - owfs
