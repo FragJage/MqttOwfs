@@ -234,7 +234,7 @@ string MqttOwfs::OwGetValue(const string& configName, int round, bool uncachedRe
 
     try
     {
-		m_OwfsClient.SetOwserverFlag(owfscpp::Uncached, uncachedRead);
+        m_OwfsClient.SetOwserverFlag(owfscpp::Uncached, uncachedRead);
         svalue = m_OwfsClient.Get(configName);
     }
     catch (const exception& e)
@@ -306,34 +306,37 @@ void MqttOwfs::OwDeviceAdd(const string& name)
     switch(family)
     {
 		case 0x01 : 	//DS2401
-		    OwDeviceAdd(name, name+"/IsPresent", -1);
+		    OwDeviceAdd(name+"/IsPresent", name+"/IsPresent", -1);
 			break;
 		case 0x05 : 	//DS2405
 		    OwDeviceAdd(name, name+"/PIO", -1);
 			break;
 		case 0x10 :		//DS18S20, DS1920
-		    OwDeviceAdd(name, name+"/temperature9", 1);
+		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
 			break;
 		case 0x12 :		//DS2406/07
 		    OwDeviceAdd(name, name+"/PIO.A", -1);
 			break;
 		case 0x1D :		//DS2423
-		    OwDeviceAdd(name, name+"/counters.A", -1);
+		    OwDeviceAdd(name+"/counters.A", name+"/counters.A", -1);
+		    OwDeviceAdd(name+"/counters.B", name+"/counters.B", -1);
 			break;
 		case 0x20 : 	//DS2450
 		    OwDeviceAdd(name, name+"/PIO.A", -1);
 			break;
 		case 0x21 :		//DS1921
-		    OwDeviceAdd(name, name+"/temperature9", 1);
+		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
 			break;
 		case 0x22 :		//DS1822
-		    OwDeviceAdd(name, name+"/temperature9", 1);
+		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
 			break;
 		case 0x26 :		//DS2438
-		    OwDeviceAdd(name, name+"/VDD", 1);
+		    OwDeviceAdd(name+"/VDD", name+"/VDD", -1);
+		    OwDeviceAdd(name+"/humidity", name+"/humidity", -1);
+		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
 			break;
 		case 0x28 : 	//DS18B20
-		    OwDeviceAdd(name, name+"/temperature9", 1);
+		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
 			break;
 		case 0x29 : 	//DS2408
 		    OwDeviceAdd(name, name+"/PIO.BYTE", -1);
