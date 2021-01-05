@@ -315,14 +315,18 @@ void MqttOwfs::OwDeviceAdd(const string& name)
 		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
 			break;
 		case 0x12 :		//DS2406/07
-		    OwDeviceAdd(name, name+"/PIO.A", -1);
+		    OwDeviceAdd(name+"/PIO.A", name+"/PIO.A", -1);
+		    OwDeviceAdd(name+"/PIO.B", name+"/PIO.B", -1);
 			break;
 		case 0x1D :		//DS2423
 		    OwDeviceAdd(name+"/counters.A", name+"/counters.A", -1);
 		    OwDeviceAdd(name+"/counters.B", name+"/counters.B", -1);
 			break;
 		case 0x20 : 	//DS2450
-		    OwDeviceAdd(name, name+"/PIO.A", -1);
+		    OwDeviceAdd(name+"/PIO.A", name+"/PIO.A", -1);
+		    OwDeviceAdd(name+"/PIO.B", name+"/PIO.B", -1);
+		    OwDeviceAdd(name+"/PIO.C", name+"/PIO.C", -1);
+		    OwDeviceAdd(name+"/PIO.D", name+"/PIO.D", -1);
 			break;
 		case 0x21 :		//DS1921
 		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
@@ -339,10 +343,11 @@ void MqttOwfs::OwDeviceAdd(const string& name)
 		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
 			break;
 		case 0x29 : 	//DS2408
-		    OwDeviceAdd(name, name+"/PIO.BYTE", -1);
+		    OwDeviceAdd(name+"/PIO.BYTE", name+"/PIO.BYTE", -1);
 			break;
 		case 0x3A : 	//DS2413
-		    OwDeviceAdd(name, name+"/PIO.A", -1);
+		    OwDeviceAdd(name+"/PIO.A", name+"/PIO.A", -1);
+		    OwDeviceAdd(name+"/PIO.B", name+"/PIO.B", -1);
 			break;
     }
 
