@@ -309,7 +309,7 @@ void MqttOwfs::OwDeviceAdd(const string& name)
 		    OwDeviceAdd(name+"/IsPresent", name+"/IsPresent", -1);
 			break;
 		case 0x05 : 	//DS2405
-		    OwDeviceAdd(name, name+"/PIO", -1);
+		    OwDeviceAdd(name+"/PIO", name+"/PIO", -1);
 			break;
 		case 0x10 :		//DS18S20, DS1920
 		    OwDeviceAdd(name+"/temperature", name+"/temperature", -1);
