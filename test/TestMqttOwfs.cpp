@@ -67,16 +67,17 @@ void TestMqttOwfs::waitMsg(size_t maxMsg, int maxTime)
 
 bool TestMqttOwfs::Start()
 {
+    m_Messages.clear();
 	thread integrationTest(ThreadStart, &mqttOwfs);
 	integrationTest.detach();
-	waitMsg(10, 2500);
+	waitMsg(16, 2500);
 
 	map<string, string>::iterator it;
-	it = m_Messages.find("owfs/10.2DCF462904B4");
+	it = m_Messages.find("owfs/10.2DCF462904B4/temperature");
 	assert(m_Messages.end() != it);
-	it = m_Messages.find("owfs/05.78D868A7FF3F");
+	it = m_Messages.find("owfs/05.78D868A7FF3F/PIO");
 	assert(m_Messages.end() != it);
-	it = m_Messages.find("owfs/29.2BF1FCD97A96");
+	it = m_Messages.find("owfs/29.2BF1FCD97A96/PIO.BYTE");
 	assert(m_Messages.end() != it);
 
 	m_Messages.clear();
@@ -86,11 +87,11 @@ bool TestMqttOwfs::Start()
 
 bool TestMqttOwfs::DeviceRefresh()
 {
-	mqttClient.Publish("owfs/command/05.78D868A7FF3F", "REQUEST");
-	waitMsg(1, 200);
+	mqttClient.Publish("owfs/command/05.78D868A7FF3F/PIO", "REQUEST");
+	waitMsg(2, 200);
 
 	map<string, string>::iterator it;
-	it = m_Messages.find("owfs/05.78D868A7FF3F");
+	it = m_Messages.find("owfs/05.78D868A7FF3F/PIO");
 	assert(m_Messages.end() != it);
 
 	m_Messages.clear();
@@ -100,12 +101,11 @@ bool TestMqttOwfs::DeviceRefresh()
 
 bool TestMqttOwfs::DeviceSet()
 {
-
-	mqttClient.Publish("owfs/command/29.2BF1FCD97A96", "255");
-	waitMsg(1, 200);
+	mqttClient.Publish("owfs/command/29.2BF1FCD97A96/PIO.BYTE", "255");
+	waitMsg(2, 200);
 
 	map<string, string>::iterator it;
-	it = m_Messages.find("owfs/29.2BF1FCD97A96");
+	it = m_Messages.find("owfs/29.2BF1FCD97A96/PIO.BYTE");
 	assert(m_Messages.end() != it);
 
 	m_Messages.clear();
@@ -118,8 +118,8 @@ bool TestMqttOwfs::Commands()
 	map<string, string>::iterator it;
 
 	mqttClient.Publish("owfs/command", "REQUEST");
-	waitMsg(3, 500);
-	it = m_Messages.find("owfs/05.78D868A7FF3F");
+	waitMsg(18, 500);
+	it = m_Messages.find("owfs/05.78D868A7FF3F/PIO");
 	assert(m_Messages.end() != it);
 	m_Messages.clear();
 
