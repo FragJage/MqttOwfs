@@ -183,12 +183,12 @@ void MqttOwfs::RefreshDevices(bool forceRefresh)
     time_t timeNow = time((time_t*)0);
     static time_t lastRefreshDevices = timeNow;
 
-
 	if((timeNow-lastRefreshDevices<m_RefreshDevicesInterval)&&(!forceRefresh)) return;
     lastRefreshDevices = timeNow;
 
     try
     {
+        lock_guard<mutex> lock(m_OwfsClientAccess);
         lstDir = m_OwfsClient.DirAll("/");
     }
     catch (const exception& e)
@@ -207,7 +207,6 @@ void MqttOwfs::RefreshDevices(bool forceRefresh)
             OwDeviceAdd(device);
     }
 }
-
 
 bool MqttOwfs::OwDeviceExist(const string& device)
 {
@@ -234,6 +233,7 @@ string MqttOwfs::OwGetValue(const string& configName, int round, bool uncachedRe
 
     try
     {
+        lock_guard<mutex> lock(m_OwfsClientAccess);
         m_OwfsClient.SetOwserverFlag(owfscpp::Uncached, uncachedRead);
         svalue = m_OwfsClient.Get(configName);
     }
@@ -261,6 +261,7 @@ string MqttOwfs::OwIsPresent(const string& configName, bool uncachedRead)
     LOG_TRACE(m_Log) << "Search presence of " << configName << " with uncachedread to " << uncachedRead;
     try
     {
+        lock_guard<mutex> lock(m_OwfsClientAccess);
 		m_OwfsClient.SetOwserverFlag(owfscpp::Uncached, uncachedRead);
         lstDir = m_OwfsClient.DirAll("");
 
@@ -292,6 +293,7 @@ void MqttOwfs::OwDeviceAdd(const string& name)
 
 	try
 	{
+	    lock_guard<mutex> lock(m_OwfsClientAccess);
 		svalue = m_OwfsClient.Get(name + "/family");
 	}
 	catch (const exception& e)
@@ -374,8 +376,7 @@ bool MqttOwfs::RefreshValue(owDevice& device)
     if(value==device.GetValue()) return false;
 
     device.SetValue(value);
-	lock_guard<mutex> lock(m_MqttQueueAccess);
-	m_MqttQueue.emplace(device.GetDisplayName(), value);
+    PublishAsyncAdd(device.GetDisplayName(), value);
 	LOG_VERBOSE(m_Log) << "New value for " << name << " : " << value;
 
 	return true;
@@ -394,18 +395,17 @@ void MqttOwfs::RefreshValues(bool forceRefresh)
         }
     }
 
-	if(newvalue) m_MqttQueueCond.notify_one();
+	if(newvalue) PublishAsyncStart();
 }
 
 void MqttOwfs::MessageForService(const string& msg)
 {
 	if (msg == "REQUEST")
 	{
-		lock_guard<mutex> lock(m_MqttQueueAccess);
 		for (map<string, owDevice>::iterator it = m_OwDevices.begin(); it != m_OwDevices.end(); ++it)
-			m_MqttQueue.emplace(it->second.GetDisplayName(), it->second.GetValue());
+			PublishAsyncAdd(it->second.GetDisplayName(), it->second.GetValue());
 
-		m_MqttQueueCond.notify_one();
+		PublishAsyncStart();
 	}
 	else if (msg == "REFRESH_DEVICES")
 	{
@@ -414,10 +414,6 @@ void MqttOwfs::MessageForService(const string& msg)
 	else if (msg == "REFRESH_VALUES")
 	{
 		RefreshValues(true);
-	}
-	else if (msg == "RELOAD_CONFIG")
-	{
-	    m_RestartCond.notify_one();
 	}
 	else
 	{
@@ -442,27 +438,28 @@ void MqttOwfs::MessageForDevice(const string& device, const string& msg)
 
 	if (msg == "REQUEST")
 	{
-		lock_guard<mutex> lock(m_MqttQueueAccess);
-		m_MqttQueue.emplace(it->second.GetDisplayName(), it->second.GetValue());
-		m_MqttQueueCond.notify_one();
+		PublishAsyncAdd(it->second.GetDisplayName(), it->second.GetValue());
+		PublishAsyncStart();
 		return;
 	}
 
 	if (msg.length() > 20)
 	{
 		LOG_WARNING(m_Log) << "Message seem to be very long, truncate to 20 characters.";
+		lock_guard<mutex> lock(m_OwfsClientAccess);
 		m_OwfsClient.Write(it->first, msg.substr(0, 20));
 	}
 	else
 	{
+	    lock_guard<mutex> lock(m_OwfsClientAccess);
 		m_OwfsClient.Write(it->first, msg);
 	}
 
 	if(RefreshValue(it->second))
-		m_MqttQueueCond.notify_one();
+		PublishAsyncStart();
 }
 
-void MqttOwfs::on_message(const string& topic, const string& message)
+void MqttOwfs::IncomingMessage(const string& topic, const string& message)
 {
 	LOG_VERBOSE(m_Log) << "Mqtt receive " << topic << " : " << message;
 
@@ -485,6 +482,12 @@ void MqttOwfs::on_message(const string& topic, const string& message)
 	return MessageForDevice(device, message);
 }
 
+void MqttOwfs::Refresh()
+{
+    RefreshDevices(false);
+    RefreshValues(false);
+}
+
 int MqttOwfs::DaemonLoop(int argc, char* argv[])
 {
     int ret = 0;
@@ -494,55 +497,17 @@ int MqttOwfs::DaemonLoop(int argc, char* argv[])
 	Subscribe(GetMainTopic() + "command/#");
 	LOG_VERBOSE(m_Log) << "Subscript to : " << GetMainTopic() + "command/#";
 
-	SendMqttMessages();
-
 	bool bStop = false;
-	bool bPause = false;
-	while (!bStop)
-	{
-		int cond = Service::Get()->WaitFor({ m_RestartCond, m_MqttQueueCond }, 250);
-		switch(cond)
-		{
-		    case 0 :
-                switch (Service::Get()->GetStatus())
-                {
-                    case Service::StatusKind::PAUSE:
-                        bPause = true;
-                        break;
-                    case Service::StatusKind::START:
-                        bPause = false;
-                        cond = 1;
-                        break;
-                    case Service::StatusKind::STOP:
-                        bStop = true;
-                        break;
-                }
-                break;
-            case 1 :
-                bStop = true;
-                ret = MqttDaemon::RESTART_MQTTDAEMON;
-                break;
-		}
-		if (!bPause)
-		{
-            RefreshDevices(false);
-            RefreshValues(false);
-			SendMqttMessages();
-		}
-	}
+	while(!bStop)
+    {
+        if(WaitFor(250)==Service::STATUS_CHANGED)
+        {
+            if(Service::Get()->GetStatus() == Service::StatusKind::STOP) bStop = true;
+        }
+        thread t(&MqttOwfs::Refresh, this);
+        t.detach();
+    }
 
 	LOG_EXIT_OK;
     return ret;
-}
-
-void MqttOwfs::SendMqttMessages()
-{
-	lock_guard<mutex> lock(m_MqttQueueAccess);
-	while (!m_MqttQueue.empty())
-	{
-		MqttQueue& mqttQueue = m_MqttQueue.front();
-		LOG_VERBOSE(m_Log) << "Send " << mqttQueue.Topic << " : " << mqttQueue.Message;
-		Publish(mqttQueue.Topic, mqttQueue.Message);
-		m_MqttQueue.pop();
-	}
 }

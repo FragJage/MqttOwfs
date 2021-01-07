@@ -71,6 +71,8 @@
 		<Unit filename="../../dependencies/MqttDaemon/src/MqttClient.h" />
 		<Unit filename="../../dependencies/MqttDaemon/src/MqttDaemon.cpp" />
 		<Unit filename="../../dependencies/MqttDaemon/src/MqttDaemon.h" />
+		<Unit filename="../../dependencies/MqttDaemon/src/MqttLogger.cpp" />
+		<Unit filename="../../dependencies/MqttDaemon/src/MqttLogger.h" />
 		<Unit filename="../../dependencies/ServiceSkeleton/src/Service.cpp" />
 		<Unit filename="../../dependencies/ServiceSkeleton/src/Service.h" />
 		<Unit filename="../../dependencies/SimpleFolder/src/SimpleFolders.cpp" />

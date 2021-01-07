@@ -9,7 +9,6 @@ TestMqttOwfs::TestMqttOwfs() : TestClass("MqttOwfs", this)
 	addTest("DeviceSet", &TestMqttOwfs::DeviceSet);
 	addTest("Commands", &TestMqttOwfs::Commands);
 	addTest("Stop", &TestMqttOwfs::Stop);
-	addTest("CoverageConfig", &TestMqttOwfs::CoverageConfig);
 
 	mqttClient.SetMessageCallback(this);
 	mqttClient.Connect();
@@ -133,90 +132,15 @@ bool TestMqttOwfs::Commands()
 	assert(0 < m_Messages.size());
 	m_Messages.clear();
 
-	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	waitMsg(1, 200);
-	Plateforms::delay(505);
-	waitMsg(2, 200);
-	assert(1 <= m_Messages.size());
-	m_Messages.clear();
-
 	return true;
 }
 
 bool TestMqttOwfs::Stop()
 {
-	Service::Get()->ChangeStatus(Service::StatusKind::PAUSE);
-	Plateforms::delay(350);
 	Service::Get()->ChangeStatus(Service::StatusKind::START);
 	Plateforms::delay(350);
 	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
 	Plateforms::delay(205);
 
 	return true;
-}
-
-void TestMqttOwfs::ThreadConf(MqttOwfs* pMqttDev)
-{
-	char exeName[] = "config";
-	char consArg[] = "-console";
-	char* argv[2];
-
-	argv[0] = exeName;
-	argv[1] = consArg;
-	Service::Get()->Start(2, argv);
-}
-
-bool TestMqttOwfs::CoverageConfig()
-{
-    mqttOwfs.SetConfigfile("./test/data/MqttOwfs1.conf");
-	thread integrationTest1(ThreadConf, &mqttOwfs);
-	integrationTest1.detach();
-	waitMsg(5, 500);
-	m_Messages.clear();
-	Plateforms::delay(200);
-
-    mqttOwfs.SetConfigfile("./test/data/MqttOwfs2.conf");
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	Plateforms::delay(200);
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	waitMsg(5, 500);
-	m_Messages.clear();
-	Plateforms::delay(200);
-
-    mqttOwfs.SetConfigfile("./test/data/MqttOwfs3.conf");
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	Plateforms::delay(200);
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	waitMsg(5, 500);
-	m_Messages.clear();
-	Plateforms::delay(200);
-
-    mqttOwfs.SetConfigfile("./test/data/MqttOwfs4.conf");
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	Plateforms::delay(200);
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	waitMsg(5, 500);
-	m_Messages.clear();
-	Plateforms::delay(200);
-
-    mqttOwfs.SetConfigfile("./test/data/MqttOwfs5.conf");
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	Plateforms::delay(200);
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	waitMsg(5, 500);
-	m_Messages.clear();
-	Plateforms::delay(200);
-
-    mqttOwfs.SetConfigfile("./test/data/MqttOwfs6.conf");
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	Plateforms::delay(200);
-   	mqttClient.Publish("owfs/command", "RELOAD_CONFIG");
-	waitMsg(5, 500);
-	m_Messages.clear();
-	Plateforms::delay(200);
-
-	Service::Get()->ChangeStatus(Service::StatusKind::STOP);
-	Plateforms::delay(100);
-
-    return true;
 }
