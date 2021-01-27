@@ -36,6 +36,10 @@ void MqttOwfs::DaemonConfigure(SimpleIni& iniFile)
 	m_RefreshDevicesInterval = ivalue;
 	LOG_VERBOSE(m_Log) << "Set RefreshDevicesInterval to " << m_RefreshDevicesInterval;
 
+    ivalue = iniFile.GetValue("owfs", "timeout", 2000);
+    m_OwfsClient.SetTimeout(ivalue);
+	LOG_VERBOSE(m_Log) << "Set timeout to " << ivalue << " ms";
+
 	ivalue = iniFile.GetValue("owfs", "valuesinterval", 10);
 	owDevice::SetDefaultRefreshInterval(ivalue);
 	LOG_VERBOSE(m_Log) << "Set RefreshValuesInterval to " << ivalue;
@@ -128,6 +132,7 @@ void MqttOwfs::DevicesConfigure(SimpleIni& iniFile)
 		if ((*itSection) == "owfs") continue;
 		if ((*itSection) == "mqtt") continue;
 		if ((*itSection) == "log") continue;
+		if ((*itSection) == "mqttlog") continue;
 
 		configName = (*itSection);
 		pos = configName.find("/");
@@ -240,7 +245,7 @@ string MqttOwfs::OwGetValue(const string& configName, int round, bool uncachedRe
     catch (const exception& e)
     {
         LOG_WARNING(m_Log) << "Unable to read " << configName << " : " << e.what();
-        return "";
+        return "$#{ERROR}#$";
     }
 
     if(round<0) return svalue;
@@ -370,6 +375,11 @@ bool MqttOwfs::RefreshValue(owDevice& device)
     {
         LOG_TRACE(m_Log) << "Read value for " << name;
         value = OwGetValue(name, device.GetRound(), device.GetUncachedRead());
+        if(value == "$#{ERROR}#$")
+        {
+            device.ExtendRefreshDelay(10);  //Unable to read, retry in 10s
+            return false;
+        }
     }
 
     device.IsRefreshed();
@@ -384,8 +394,15 @@ bool MqttOwfs::RefreshValue(owDevice& device)
 
 void MqttOwfs::RefreshValues(bool forceRefresh)
 {
+    static bool inProgress = false;
     std::map<std::string, owDevice>::iterator it;
 	bool newvalue = false;
+
+	{
+        lock_guard<mutex> lock(m_RefreshAccess);
+        if(inProgress) return;
+        inProgress = true;
+	}
 
     for(it=m_OwDevices.begin(); it!=m_OwDevices.end(); ++it)
     {
@@ -396,6 +413,9 @@ void MqttOwfs::RefreshValues(bool forceRefresh)
     }
 
 	if(newvalue) PublishAsyncStart();
+
+    lock_guard<mutex> lock(m_RefreshAccess);
+    inProgress = false;
 }
 
 void MqttOwfs::MessageForService(const string& msg)
@@ -484,6 +504,7 @@ void MqttOwfs::IncomingMessage(const string& topic, const string& message)
 
 void MqttOwfs::Refresh()
 {
+
     RefreshDevices(false);
     RefreshValues(false);
 }

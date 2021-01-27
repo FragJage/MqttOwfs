@@ -37,6 +37,7 @@ class MqttOwfs : public MqttDaemon
 		std::map<std::string, owDevice> m_OwDevices;
 		int m_RefreshDevicesInterval;
 		std::mutex m_OwfsClientAccess;
+		std::mutex m_RefreshAccess;
 		owfscpp m_OwfsClient;
 };
 

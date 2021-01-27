@@ -16,6 +16,7 @@ public:
 	TestMqttOwfs();
 	~TestMqttOwfs();
 	static void ThreadStart(MqttOwfs* pMqttOwfs);
+	static void ThreadConf(MqttOwfs* pMqttDev);
 	void on_message(const std::string& topic, const std::string& message);
 
 	bool Start();
@@ -23,9 +24,11 @@ public:
 	bool DeviceSet();
 	bool Commands();
 	bool Stop();
+	bool CoverageConfig();
 
 private:
 	void waitMsg(size_t maxMsg, int maxTime);
+	void StartWithConfigFile(std::string configFile);
 	MqttOwfs mqttOwfs;
 	MqttClient mqttClient;
 	std::map<std::string, std::string> m_Messages;

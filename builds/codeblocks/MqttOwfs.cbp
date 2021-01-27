@@ -25,7 +25,7 @@
 				<Option object_output="obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-console -f ../../MqttOwfs-debug.conf" />
+				<Option parameters="-console -f ../../../MqttOwfs.conf" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />

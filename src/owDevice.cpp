@@ -126,6 +126,11 @@ void owDevice::SetRefreshInterval(int refreshInterval)
     m_RefreshInterval = refreshInterval;
 }
 
+int owDevice::GetRefreshInterval()
+{
+    return m_RefreshInterval;
+}
+
 void owDevice::SetDefaultUncachedRead(bool uncachedRead)
 {
     owDevice::m_DefaultUncachedRead = uncachedRead;
@@ -144,4 +149,9 @@ bool owDevice::RefreshNeeded()
 void owDevice::IsRefreshed()
 {
     m_LastRefresh = time((time_t*)0);
+}
+
+void owDevice::ExtendRefreshDelay(int delay)
+{
+    m_LastRefresh = time((time_t*)0)-m_RefreshInterval+delay;
 }

@@ -22,6 +22,7 @@ class owDevice
         std::string GetDeviceName();
         int GetRound();
 		bool GetUncachedRead();
+        int GetRefreshInterval();
         std::string GetValue();
         bool OnlyPresence();
 
@@ -30,6 +31,7 @@ class owDevice
         void SetRefreshInterval(int refreshInterval);
         bool RefreshNeeded();
         void IsRefreshed();
+        void ExtendRefreshDelay(int delay);
 
         static void SetDefaultUncachedRead(bool uncachedRead);
         static void SetDefaultRefreshInterval(int refreshInterval);
