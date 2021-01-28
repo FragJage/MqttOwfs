@@ -22,6 +22,7 @@ include_directories(../dependencies/ServiceSkeleton/src)
 include_directories(../dependencies/SimpleFolder/src)
 include_directories(../dependencies/SimpleIni/include)
 include_directories(../dependencies/SimpleLog/src)
+include_directories(../dependencies/SimpleSock/src)
  
 #Génération de la liste des fichiers sources
 file(
