@@ -1,11 +1,10 @@
+os:linux
 language: cpp
 dist: xenial
 compiler: gcc
 env:
   global:
     - COMPILER=g++
-
-sudo: required
 
 addons:
   apt:
