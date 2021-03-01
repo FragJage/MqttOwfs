@@ -11,6 +11,18 @@ if(CMAKE_VERSION VERSION_GREATER "3.0")
 endif ()
 find_package(Threads)
 
+find_library(LIBPAHO paho-mqtt3a)
+add_library(paho-mqtt3a SHARED IMPORTED)
+set_target_properties(paho-mqtt3a PROPERTIES
+  IMPORTED_LOCATION "${LIBPAHO}"
+)
+
+find_library(LIBPAHOPP paho-mqttpp3)
+add_library(paho-mqttpp3 SHARED IMPORTED)
+set_target_properties(paho-mqttpp3 PROPERTIES
+  IMPORTED_LOCATION "${LIBPAHOPP}"
+)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated") # various warning flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s -O2") # no debug, active optimisation
 
